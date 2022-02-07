@@ -1,7 +1,6 @@
 #include <iostream>
 
 using namespace std;
-
 class Figura
 {
 public:
@@ -13,7 +12,7 @@ public:
     bool tyl;
     bool zbita;
 
-    Figura(int x = 10, int y = 10, string rodzaj = "xyz", char symbol = 'x', char kolor = 'x', bool tyl = true, bool zbita = false)
+    Figura(int x = 10, int y = 8, string rodzaj = "xyz", char symbol = '-', char kolor = 'x', bool tyl = true, bool zbita = false)
     {
         this->x = x;
         this->y = y;
@@ -24,6 +23,7 @@ public:
         this->zbita = zbita;
     }
 };
+Figura Szachownica[9][8];
 // czarne
 Figura *KrolC = new Figura(4, 1, "krol", 'k', 'c', true, false);
 Figura *DamaC = new Figura(5, 1, "dama", 'd', 'c', true, false);
@@ -43,8 +43,6 @@ Figura *Skoczek1B = new Figura(2, 8, "skoczek", 'S', 'b', true, false);
 Figura *Skoczek2B = new Figura(7, 8, "skoczek", 'S', 'b', true, false);
 Figura *Wieza1B = new Figura(1, 8, "wieza", 'W', 'b', true, false);
 Figura *Wieza2B = new Figura(8, 8, "wieza", 'W', 'b', true, false);
-
-Figura Szachownica[8][8];
 
 // Y       BIAŁE
 // 8 |W|S|G|K|D|G|S|W|
