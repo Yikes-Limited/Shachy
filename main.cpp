@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 class Figura
@@ -34,6 +35,26 @@ public:
         this->zbita = Figura->zbita;
     }
 };
+
+void rusz(int xStart, int yStart, int xKoniec, int yKoniec)
+{
+    swap(Szachownica[xStart][yStart], Szachownica[xKoniec][yKoniec]);
+}
+
+void rysuj()
+{
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            cout << "|" << Szachownica[j][i].symbol;
+        }
+        cout << "|" << endl;
+    }
+    cout << "=================" << endl;
+}
+
+Figura Szachownica[9][8];
 // czarne
 Figura *WiezaLC = new Figura(1, 1, "wieza", 'w', 'c', true, false);
 Figura *SkoczekLC = new Figura(2, 1, "skoczek", 's', 'c', true, false);
@@ -56,7 +77,17 @@ Figura *WiezaPB = new Figura(8, 8, "wieza", 'W', 'b', true, false);
 
 Figura *Figury[16]{WiezaLC, SkoczekLC, GoniecLC, KrolC, DamaC, GoniecPC, SkoczekPC, WiezaPC, WiezaLB, SkoczekLB, SkoczekPB, GoniecLB, KrolB, DamaB, GoniecPB, WiezaPB};
 
-Figura Szachownica[9][8];
+int main()
+{
+    for (int i = 0; i < 16; i++)
+    {
+        Figura *Temp = Figury[i];
+        Szachownica[Temp->x - 1][Temp->y - 1].przypisz(Temp);
+    }
+    rysuj();
+    rusz(0, 0, 3, 3);
+    rysuj();
+}
 
 // Y      CZARNE
 // 8 |w|s|g|k|d|g|s|w|
@@ -70,25 +101,3 @@ Figura Szachownica[9][8];
 //    A B C D E F G H
 //    1 2 3 4 5 6 7 8 X
 //         BIAŁE
-
-void rysuj()
-{
-    for (int i = 0; i < 8; i++)
-    {
-        for (int j = 0; j < 8; j++)
-        {
-            cout << "|" << Szachownica[j][i].symbol;
-        }
-        cout << "|" << endl;
-    }
-}
-
-int main()
-{
-    for (int i = 0; i < 16; i++)
-    {
-        Figura *Temp = Figury[i];
-        Szachownica[Temp->x - 1][Temp->y - 1].przypisz(Temp);
-    }
-    rysuj();
-}
