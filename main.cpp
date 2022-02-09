@@ -58,18 +58,18 @@ Figura *Figury[16]{WiezaLC, SkoczekLC, GoniecLC, KrolC, DamaC, GoniecPC, Skoczek
 
 Figura Szachownica[9][8];
 
-// Y       BIAŁE
-// 8 |W|S|G|K|D|G|S|W|
-// 7 |P|P|P|P|P|P|P|P|
+// Y      CZARNE
+// 8 |w|s|g|k|d|g|s|w|
+// 7 |p|p|p|p|p|p|p|p|
 // 6 |-|-|-|-|-|-|-|-|
 // 5 |-|-|-|-|-|-|-|-|
 // 4 |-|-|-|-|-|-|-|-|
 // 3 |-|-|-|-|-|-|-|-|
-// 2 |p|p|p|p|p|p|p|p|
-// 1 |w|s|g|k|d|g|s|w|
+// 2 |P|P|P|P|P|P|P|P|
+// 1 |W|S|G|K|D|G|S|W|
 //    A B C D E F G H
 //    1 2 3 4 5 6 7 8 X
-//        CZARNE
+//         BIAŁE
 
 void rysuj()
 {
