@@ -54,7 +54,7 @@ Figura *GoniecPB = new Figura(6, 8, "goniec", 'G', 'b', true, false);
 Figura *SkoczekPB = new Figura(7, 8, "skoczek", 'S', 'b', true, false);
 Figura *WiezaPB = new Figura(8, 8, "wieza", 'W', 'b', true, false);
 
-Figura *Figury[15]{WiezaLC, SkoczekLC, GoniecLC, KrolC, DamaC, GoniecPC, SkoczekPC, WiezaPC, WiezaLB, SkoczekLB, GoniecLB, KrolB, DamaB, GoniecPB, WiezaPB};
+Figura *Figury[16]{WiezaLC, SkoczekLC, GoniecLC, KrolC, DamaC, GoniecPC, SkoczekPC, WiezaPC, WiezaLB, SkoczekLB, SkoczekPB, GoniecLB, KrolB, DamaB, GoniecPB, WiezaPB};
 
 Figura Szachownica[9][8];
 
@@ -71,13 +71,24 @@ Figura Szachownica[9][8];
 //    1 2 3 4 5 6 7 8 X
 //        CZARNE
 
+void rysuj()
+{
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            cout << "|" << Szachownica[j][i].symbol;
+        }
+        cout << "|" << endl;
+    }
+}
+
 int main()
 {
-    for (int i = 0; i < 15; i++)
+    for (int i = 0; i < 16; i++)
     {
         Figura *Temp = Figury[i];
         Szachownica[Temp->x - 1][Temp->y - 1].przypisz(Temp);
     }
-
-    cout << Szachownica[4][2].symbol;
+    rysuj();
 }
