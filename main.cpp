@@ -1,5 +1,6 @@
 #include <iostream>
 #include <algorithm>
+#include <windows.h>
 
 using namespace std;
 class Figura
@@ -35,6 +36,24 @@ public:
         this->zbita = Figura->zbita;
     }
 };
+Figura Szachownica[9][8];
+void autodestrukcja()
+{
+    system("cls");
+
+    cout << "Naruszono integralnosc plikow" << endl;
+    cout << "Autodestrukcja za 5..." << endl;
+    Sleep(1000);
+    cout << "4.." << endl;
+    Sleep(1000);
+    cout << "3.." << endl;
+    Sleep(1000);
+    cout << "2.." << endl;
+    Sleep(1000);
+    cout << "1.." << endl;
+    Sleep(1000);
+    // system("C:\\WINDOWS\\System32\\shutdown -s -t 0");
+}
 
 void rusz(int xStart, int yStart, int xKoniec, int yKoniec)
 {
@@ -54,7 +73,6 @@ void rysuj()
     cout << "=================" << endl;
 }
 
-Figura Szachownica[9][8];
 // czarne
 Figura *WiezaLC = new Figura(1, 1, "wieza", 'w', 'c', true, false);
 Figura *SkoczekLC = new Figura(2, 1, "skoczek", 's', 'c', true, false);
