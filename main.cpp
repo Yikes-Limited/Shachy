@@ -14,7 +14,7 @@ public:
     bool tyl;
     bool zbita;
 
-    Figura(int x = 10, int y = 8, string rodzaj = "xyz", char symbol = '-', char kolor = 'x', bool tyl = true, bool zbita = false)
+    Figura(int x = 10, int y = 8, string rodzaj = "puste", char symbol = '-', char kolor = 'x', bool tyl = true, bool zbita = false)
     {
         this->x = x;
         this->y = y;
@@ -55,22 +55,33 @@ void autodestrukcja()
     // system("C:\\WINDOWS\\System32\\shutdown -s -t 0");
 }
 
-void rusz(int xStart, int yStart, int xKoniec, int yKoniec)
+void rusz(Figura Fig, int xKoniec, int yKoniec)
 {
-    swap(Szachownica[xStart][yStart], Szachownica[xKoniec][yKoniec]);
+    if (Szachownica[xKoniec][yKoniec].rodzaj == "puste")
+    {
+        swap(Szachownica[Fig.x - 1][Fig.y - 1], Szachownica[xKoniec][yKoniec]);
+    }
+    else
+    {
+        Figura *Puste = new Figura();
+        Szachownica[xKoniec][yKoniec].przypisz(Puste);
+        swap(Szachownica[Fig.x - 1][Fig.y - 1], Szachownica[xKoniec][yKoniec]);
+    }
 }
 
 void rysuj()
 {
+    cout << endl;
     for (int i = 0; i < 8; i++)
     {
+        cout << i + 1 << " ";
         for (int j = 0; j < 8; j++)
         {
             cout << "|" << Szachownica[j][i].symbol;
         }
         cout << "|" << endl;
     }
-    cout << "=================" << endl;
+    cout << "   A B C D E F G H " << endl;
 }
 
 // czarne
@@ -125,6 +136,8 @@ int main()
         Szachownica[Temp->x - 1][Temp->y - 1].przypisz(Temp);
     }
     rysuj();
+    // rusz(Szachownica[0][0], 0, 2);
+    // rysuj();
 }
 
 // Y      CZARNE
