@@ -1,6 +1,8 @@
 #include <iostream>
 #include <algorithm>
 #include <windows.h>
+#include <string>
+#include <cctype>
 
 using namespace std;
 class Figura
@@ -37,6 +39,8 @@ public:
     }
 };
 Figura Szachownica[9][8];
+// kto ma ruch
+char aktualnyRuch = 'b';
 void autodestrukcja()
 {
     system("cls");
@@ -67,11 +71,76 @@ void rusz(Figura Fig, int xKoniec, int yKoniec)
         Szachownica[xKoniec][yKoniec].przypisz(Puste);
         swap(Szachownica[Fig.x - 1][Fig.y - 1], Szachownica[xKoniec][yKoniec]);
     }
+    Szachownica[xKoniec][yKoniec].x = xKoniec;
+    Szachownica[xKoniec][yKoniec].y = yKoniec;
+}
+
+int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
+{
+    Figura FigStart = Szachownica[xStart][yStart];
+    Figura FigKoniec = Szachownica[xKoniec][yKoniec];
+    if (FigStart.kolor != aktualnyRuch)
+    {
+        cout << "Mozesz przemiescic tylko swoje figury" << endl;
+        return 1;
+    }
+    rusz(FigStart, xKoniec, yKoniec);
+    if (aktualnyRuch == 'b')
+        aktualnyRuch = 'c';
+    else
+        aktualnyRuch = 'b';
+    return 0;
+}
+
+int input()
+{
+    string wejscie;
+    // litery
+    char startL, koniecL;
+    // cyfry
+    int startC, koniecC;
+    cout << "Wybierz ruch (Format F1F4)" << endl;
+    cin >> wejscie;
+    if (wejscie.length() != 4)
+    {
+        cout << "Nie jest to poprawny format. Przykladowy ruch C2E4" << endl;
+        return 1;
+    }
+    try
+    {
+        startL = tolower(wejscie[0]);
+        startC = stoi(wejscie.substr(1, 2));
+        koniecL = tolower(wejscie[2]);
+        koniecC = stoi(wejscie.substr(3, 4));
+    }
+    catch (...)
+    {
+        cout << "Nie jest to poprawny format. Przykladowy ruch C2E4" << endl;
+        return 1;
+    }
+    if (startC > 8 || startC < 1 || koniecC > 8 || koniecC < 1)
+    {
+        cout << "Liczba nie moze byc wieksza niz 8 ani mniejsza niz 1" << endl;
+        return 1;
+    }
+    if (startL > 104 || startL < 97 || koniecL > 104 || koniecL < 97)
+    {
+        cout << "Nie jest to poprawna litera. Mozna wybrac od A-H" << endl;
+        return 1;
+    }
+    int x = (int)startL - 97;
+    int y = (int)koniecL - 97;
+    if (walidacja(x, startC - 1, y, koniecC - 1))
+    {
+        return 1;
+    }
+    return 0;
 }
 
 void rysuj()
 {
     cout << endl;
+    cout << "       CZARNE" << endl;
     for (int i = 0; i < 8; i++)
     {
         cout << i + 1 << " ";
@@ -82,6 +151,11 @@ void rysuj()
         cout << "|" << endl;
     }
     cout << "   A B C D E F G H " << endl;
+    cout << "        BIALE" << endl;
+    if (aktualnyRuch == 'b')
+        cout << "Aktualby ruch biale" << endl;
+    else
+        cout << "Aktualby ruch czarne" << endl;
 }
 
 // czarne
@@ -135,9 +209,17 @@ int main()
         Figura *Temp = Figury[i];
         Szachownica[Temp->x - 1][Temp->y - 1].przypisz(Temp);
     }
-    rysuj();
-    // rusz(Szachownica[0][0], 0, 2);
-    // rysuj();
+    while (true)
+    {
+        rysuj();
+        while (true)
+        {
+
+            int kontrolna = input();
+            if (kontrolna == 0)
+                break;
+        }
+    }
 }
 
 // Y      CZARNE
