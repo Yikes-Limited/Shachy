@@ -465,6 +465,14 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
             return 1;
         }
     }
+    else if (FigStart.rodzaj == "krol")
+    {
+        if (abs(FigStart.x - xK) > 1 || abs(FigStart.y - yK) > 1)
+        {
+            cout << "Ruch niemozliwy. Krol moze ruszyc sie tylko o 1 pole." << endl;
+            return 1;
+        }
+    }
     rusz(FigStart, xKoniec, yKoniec);
     if (aktualnyRuch == 'b')
         aktualnyRuch = 'c';
