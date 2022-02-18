@@ -228,6 +228,76 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
             }
         }
     }
+    else if (FigStart.rodzaj == "wieza")
+    {
+        if (FigStart.y != yK && FigStart.x != xK)
+        {
+            cout << "Ruch niemozliwy." << endl;
+            return 1;
+        }
+        else
+        {
+            bool nieMozliwy = false;
+            if (FigStart.y != yK)
+            {
+                if (FigStart.y - yK > 0)
+                {
+                    for (int i = yStart - 1; i > yKoniec; i--)
+                    {
+                        if (Szachownica[xStart][i].rodzaj != "puste")
+                        {
+                            nieMozliwy = true;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = yStart + 1; i < yKoniec; i++)
+                    {
+                        if (Szachownica[xStart][i].rodzaj != "puste")
+                        {
+                            nieMozliwy = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (FigStart.x != xK)
+                {
+                    if (FigStart.x - xK > 0)
+                    {
+                        for (int i = xStart - 1; i > xKoniec; i--)
+                        {
+                            if (Szachownica[i][yStart].rodzaj != "puste")
+                            {
+                                nieMozliwy = true;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int i = xStart + 1; i < xKoniec; i++)
+                        {
+                            if (Szachownica[i][yStart].rodzaj != "puste")
+                            {
+                                nieMozliwy = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (nieMozliwy)
+            {
+                cout << "Ruch niemozliwy." << endl;
+                return 1;
+            }
+        }
+    }
     rusz(FigStart, xKoniec, yKoniec);
     if (aktualnyRuch == 'b')
         aktualnyRuch = 'c';
@@ -297,9 +367,9 @@ void rysuj()
     cout << "   A B C D E F G H " << endl;
     cout << "        BIALE" << endl;
     if (aktualnyRuch == 'b')
-        cout << "Aktualby ruch biale" << endl;
+        cout << "Aktualny ruch biale" << endl;
     else
-        cout << "Aktualby ruch czarne" << endl;
+        cout << "Aktualny ruch czarne" << endl;
 }
 
 // czarne
