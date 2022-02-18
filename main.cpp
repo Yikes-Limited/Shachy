@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <string>
 #include <cctype>
+#include <cmath>
 
 using namespace std;
 class Figura
@@ -453,11 +454,22 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
             }
         }
     }
+    else if (FigStart.rodzaj == "skoczek")
+    {
+        if ((FigStart.x + xK == 2 && FigStart.y + yK == 1) || (FigStart.x + xK == 1 && FigStart.y + yK == 2) || (abs(FigStart.x - xK) == 1 && FigStart.y + yK == 2) || (abs(FigStart.x - xK) == 2 && FigStart.y + yK == 1) || (abs(FigStart.x - xK) == 1 && abs(FigStart.y - yK) == 2) || (abs(FigStart.x - xK) == 2 && abs(FigStart.y - yK) == 1) || (FigStart.x + xK == 1 && abs(FigStart.y - yK) == 2) || (FigStart.x + xK == 2 && abs(FigStart.y - yK) == 1))
+        {
+        }
+        else
+        {
+            cout << "Ruch niemozliwy. Nie mozesz ruszyc sie w ten sposob skoczkiem" << endl;
+            return 1;
+        }
+    }
     rusz(FigStart, xKoniec, yKoniec);
-    // if (aktualnyRuch == 'b')
-    //     aktualnyRuch = 'c';
-    // else
-    //     aktualnyRuch = 'b';
+    if (aktualnyRuch == 'b')
+        aktualnyRuch = 'c';
+    else
+        aktualnyRuch = 'b';
     return 0;
 }
 
@@ -593,14 +605,14 @@ int main()
 }
 
 // Y      CZARNE
-// 8 |w|s|g|k|d|g|s|w|
-// 7 |p|p|p|p|p|p|p|p|
-// 6 |-|-|-|-|-|-|-|-|
-// 5 |-|-|-|-|-|-|-|-|
-// 4 |-|-|-|-|-|-|-|-|
+// 1 |w|s|g|k|d|g|s|w|
+// 2 |p|p|p|p|p|p|p|p|
 // 3 |-|-|-|-|-|-|-|-|
-// 2 |P|P|P|P|P|P|P|P|
-// 1 |W|S|G|K|D|G|S|W|
+// 4 |-|-|-|-|-|-|-|-|
+// 5 |-|-|-|-|-|-|-|-|
+// 6 |-|-|-|-|-|-|-|-|
+// 7 |P|P|P|P|P|P|P|P|
+// 8 |W|S|G|K|D|G|S|W|
 //    A B C D E F G H
 //    1 2 3 4 5 6 7 8 X
 //         BIAŁE
