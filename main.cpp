@@ -298,6 +298,75 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
             }
         }
     }
+    else if (FigStart.rodzaj == "goniec")
+    {
+        bool nieMozliwy = true;
+        if (FigStart.x - xK > 0)
+        {
+            if (FigStart.y - yK > 0)
+            {
+                // czy ruch jest w ogole mozliwy
+                for (int x = xStart - 1, y = yStart - 1; x >= xKoniec && y >= yKoniec; x--, y--)
+                    if (x == xKoniec && y == yKoniec)
+                        nieMozliwy = false;
+
+                // czy po drodze nie ma innych figur
+                for (int x = xStart - 1, y = yStart - 1; x >= xKoniec && y >= yKoniec; x--, y--)
+                    if (Szachownica[x][y].rodzaj != "puste")
+                    {
+                        nieMozliwy = true;
+                        break;
+                    }
+            }
+            else
+            {
+                for (int x = xStart - 1, y = yStart + 1; x >= xKoniec && y <= yKoniec; x--, y++)
+                    if (x == xKoniec && y == yKoniec)
+                        nieMozliwy = false;
+
+                for (int x = xStart - 1, y = yStart + 1; x >= xKoniec && y <= yKoniec; x--, y++)
+                    if (Szachownica[x][y].rodzaj != "puste")
+                    {
+                        nieMozliwy = true;
+                        break;
+                    }
+            }
+        }
+        else
+        {
+            if (FigStart.y - yK > 0)
+            {
+                for (int x = xStart + 1, y = yStart - 1; x <= xKoniec && y >= yKoniec; x++, y--)
+                    if (x == xKoniec && y == yKoniec)
+                        nieMozliwy = false;
+
+                for (int x = xStart + 1, y = yStart - 1; x <= xKoniec && y >= yKoniec; x++, y--)
+                    if (Szachownica[x][y].rodzaj != "puste")
+                    {
+                        nieMozliwy = true;
+                        break;
+                    }
+            }
+            else
+            {
+                for (int x = xStart + 1, y = yStart + 1; x <= xKoniec && y <= yKoniec; x++, y++)
+                    if (x == xKoniec && y == yKoniec)
+                        nieMozliwy = false;
+
+                for (int x = xStart + 1, y = yStart + 1; x <= xKoniec && y <= yKoniec; x++, y++)
+                    if (Szachownica[x][y].rodzaj != "puste")
+                    {
+                        nieMozliwy = true;
+                        break;
+                    }
+            }
+        }
+        if (nieMozliwy)
+        {
+            cout << "Ruch niemozliwy." << endl;
+            return 1;
+        }
+    }
     rusz(FigStart, xKoniec, yKoniec);
     if (aktualnyRuch == 'b')
         aktualnyRuch = 'c';
@@ -364,7 +433,8 @@ void rysuj()
         }
         cout << "|" << endl;
     }
-    cout << "   A B C D E F G H " << endl;
+    cout << endl
+         << "   A B C D E F G H " << endl;
     cout << "        BIALE" << endl;
     if (aktualnyRuch == 'b')
         cout << "Aktualny ruch biale" << endl;
