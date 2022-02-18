@@ -71,18 +71,162 @@ void rusz(Figura Fig, int xKoniec, int yKoniec)
         Szachownica[xKoniec][yKoniec].przypisz(Puste);
         swap(Szachownica[Fig.x - 1][Fig.y - 1], Szachownica[xKoniec][yKoniec]);
     }
-    Szachownica[xKoniec][yKoniec].x = xKoniec;
-    Szachownica[xKoniec][yKoniec].y = yKoniec;
+    Szachownica[xKoniec][yKoniec].x = xKoniec + 1;
+    Szachownica[xKoniec][yKoniec].y = yKoniec + 1;
 }
 
 int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
 {
     Figura FigStart = Szachownica[xStart][yStart];
     Figura FigKoniec = Szachownica[xKoniec][yKoniec];
+    // do obliczen
+    int xK = xKoniec + 1;
+    int yK = yKoniec + 1;
     if (FigStart.kolor != aktualnyRuch)
     {
         cout << "Mozesz przemiescic tylko swoje figury" << endl;
         return 1;
+    }
+    if (FigStart.kolor == FigKoniec.kolor)
+    {
+        cout << "Nie mozesz zbic wlasnej figury" << endl;
+        return 1;
+    }
+
+    if (FigStart.rodzaj == "pionek")
+    {
+        if (FigStart.kolor == 'b')
+        {
+            // czy ruch jest mozliwy
+            if (FigStart.y - yK == 1 || (FigStart.y == 7 && FigStart.y - yK == 2 && FigStart.x == xK))
+            {
+                if (FigStart.x == xK)
+                {
+                    // ruch o 1 do przodu
+                    if (Szachownica[xStart][yStart - 1].rodzaj != "puste")
+                    {
+                        cout << "Ruch niemozliwy. Miejsce nie jest puste" << endl;
+                        return 1;
+                    }
+                    // ruch o 2 do przodu ze startowej pozycji
+                    if (FigStart.y == 7 && FigStart.y - yK == 2 && Szachownica[xStart][yStart - 2].rodzaj != "puste")
+                    {
+                        cout << "Ruch niemozliwy. Miejsce nie jest puste" << endl;
+                        return 1;
+                    }
+                }
+                // bicie
+                else if (FigStart.x - xK == 1 || xK - FigStart.x == 1)
+                {
+                    if (FigKoniec.kolor != 'c')
+                    {
+                        cout << "Nie mozesz ruszyc sie na bok nie bijac figury przeciwnika" << endl;
+                        return 1;
+                    }
+                }
+                // ruch nie jest mozliwy
+                else
+                {
+                    cout << "Ruch niemozliwy. Nie mozesz sie ruszyc o tyle pol w bok" << endl;
+                    return 1;
+                }
+            }
+            else
+            {
+                cout << "Ruch niemozliwy. Nie mozesz sie ruszyc o tyle pol." << endl;
+                return 1;
+            }
+            // brak bicia
+
+            // raczej prosciej byloby zaznaczyc wszystkie mozliwe miejsca niz sprawdzac czy ruch jest bledny, ale pomyslalem o tym po fakcie do chuja
+            /*
+            // pionek jeszcze nie ruszony
+            if (FigStart.y == 7)
+            {
+                if (FigStart.y - yK > 2 || (FigStart.x != xK && FigStart.y - yK == 2))
+                {
+                    cout << "Ruch niemozliwy. Mozesz ruszyc sie maksymalnie o 2 pola do przodu" << endl;
+                    return 1;
+                }
+                if (FigKoniec.rodzaj != "puste")
+                {
+                    cout << "Ruch niemozliwy. To pole jest zajete" << endl;
+                    return 1;
+                }
+            }
+            else
+            {
+                // pionek juz ruszony
+                if (FigStart.y - yK > 1)
+                {
+                    cout << "Ruch niemozliwy. Nie mozesz ruszyc sie wiecej nic o 1 pole do porzdu." << endl;
+                    return 1;
+                }
+            }
+            // ruch w tyl
+            if (FigStart.y < yK)
+            {
+                cout << "Ruch niemozliwy. Nie mozesz ruszyc sie pionkiem w tyl" << endl;
+                return 1;
+            }
+            // ruch w bok o wiecej niz 1
+            if (FigStart.x - xK > 1 || xK - FigStart.x > 1)
+            {
+                cout << "Ruch niemozliwy. Mozesz ruszyc sie pionkiem o jedno miejsce w bok" << endl;
+                return 1;
+            }
+            // bicie
+            if (FigStart.y != yK && FigKoniec.rodzaj == "puste")
+            {
+                cout << "Ruch niemozliwy. Nie mozesz ruszyc sie w bok, jezeli nie zbijasz figury." << endl;
+                return 1;
+            }
+            else
+            {
+            }*/
+        }
+        else
+        {
+            // czy ruch jest mozliwy
+            if (yK - FigStart.y == 1 || (FigStart.y == 2 && yK - FigStart.y == 2 && FigStart.x == xK))
+            {
+                if (FigStart.x == xK)
+                {
+                    // ruch o 1 do przodu
+                    if (Szachownica[xStart][yStart + 1].rodzaj != "puste")
+                    {
+                        cout << "Ruch niemozliwy. Miejsce nie jest puste" << endl;
+                        return 1;
+                    }
+                    // ruch o 2 do przodu ze startowej pozycji
+                    if (FigStart.y == 7 && yK - FigStart.y == 2 && Szachownica[xStart][yStart + 2].rodzaj != "puste")
+                    {
+                        cout << "Ruch niemozliwy. Miejsce nie jest puste" << endl;
+                        return 1;
+                    }
+                }
+                // bicie
+                else if (FigStart.x - xK == 1 || xK - FigStart.x == 1)
+                {
+                    if (FigKoniec.kolor != 'b')
+                    {
+                        cout << "Nie mozesz ruszyc sie na bok nie bijac figury przeciwnika" << endl;
+                        return 1;
+                    }
+                }
+                // ruch nie jest mozliwy
+                else
+                {
+                    cout << "Ruch niemozliwy. Nie mozesz sie ruszyc o tyle pol w bok" << endl;
+                    return 1;
+                }
+            }
+            else
+            {
+                cout << "Ruch niemozliwy. Nie mozesz sie ruszyc o tyle pol." << endl;
+                return 1;
+            }
+        }
     }
     rusz(FigStart, xKoniec, yKoniec);
     if (aktualnyRuch == 'b')
