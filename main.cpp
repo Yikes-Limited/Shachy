@@ -136,54 +136,6 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
                 cout << "Ruch niemozliwy. Nie mozesz sie ruszyc o tyle pol." << endl;
                 return 1;
             }
-            // brak bicia
-
-            // raczej prosciej byloby zaznaczyc wszystkie mozliwe miejsca niz sprawdzac czy ruch jest bledny, ale pomyslalem o tym po fakcie do chuja
-            /*
-            // pionek jeszcze nie ruszony
-            if (FigStart.y == 7)
-            {
-                if (FigStart.y - yK > 2 || (FigStart.x != xK && FigStart.y - yK == 2))
-                {
-                    cout << "Ruch niemozliwy. Mozesz ruszyc sie maksymalnie o 2 pola do przodu" << endl;
-                    return 1;
-                }
-                if (FigKoniec.rodzaj != "puste")
-                {
-                    cout << "Ruch niemozliwy. To pole jest zajete" << endl;
-                    return 1;
-                }
-            }
-            else
-            {
-                // pionek juz ruszony
-                if (FigStart.y - yK > 1)
-                {
-                    cout << "Ruch niemozliwy. Nie mozesz ruszyc sie wiecej nic o 1 pole do porzdu." << endl;
-                    return 1;
-                }
-            }
-            // ruch w tyl
-            if (FigStart.y < yK)
-            {
-                cout << "Ruch niemozliwy. Nie mozesz ruszyc sie pionkiem w tyl" << endl;
-                return 1;
-            }
-            // ruch w bok o wiecej niz 1
-            if (FigStart.x - xK > 1 || xK - FigStart.x > 1)
-            {
-                cout << "Ruch niemozliwy. Mozesz ruszyc sie pionkiem o jedno miejsce w bok" << endl;
-                return 1;
-            }
-            // bicie
-            if (FigStart.y != yK && FigKoniec.rodzaj == "puste")
-            {
-                cout << "Ruch niemozliwy. Nie mozesz ruszyc sie w bok, jezeli nie zbijasz figury." << endl;
-                return 1;
-            }
-            else
-            {
-            }*/
         }
         else
         {
@@ -311,7 +263,7 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
                         nieMozliwy = false;
 
                 // czy po drodze nie ma innych figur
-                for (int x = xStart - 1, y = yStart - 1; x >= xKoniec && y >= yKoniec; x--, y--)
+                for (int x = xStart - 1, y = yStart - 1; x > xKoniec && y > yKoniec; x--, y--)
                     if (Szachownica[x][y].rodzaj != "puste")
                     {
                         nieMozliwy = true;
@@ -324,7 +276,7 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
                     if (x == xKoniec && y == yKoniec)
                         nieMozliwy = false;
 
-                for (int x = xStart - 1, y = yStart + 1; x >= xKoniec && y <= yKoniec; x--, y++)
+                for (int x = xStart - 1, y = yStart + 1; x > xKoniec && y < yKoniec; x--, y++)
                     if (Szachownica[x][y].rodzaj != "puste")
                     {
                         nieMozliwy = true;
@@ -340,7 +292,7 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
                     if (x == xKoniec && y == yKoniec)
                         nieMozliwy = false;
 
-                for (int x = xStart + 1, y = yStart - 1; x <= xKoniec && y >= yKoniec; x++, y--)
+                for (int x = xStart + 1, y = yStart - 1; x < xKoniec && y > yKoniec; x++, y--)
                     if (Szachownica[x][y].rodzaj != "puste")
                     {
                         nieMozliwy = true;
@@ -353,7 +305,7 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
                     if (x == xKoniec && y == yKoniec)
                         nieMozliwy = false;
 
-                for (int x = xStart + 1, y = yStart + 1; x <= xKoniec && y <= yKoniec; x++, y++)
+                for (int x = xStart + 1, y = yStart + 1; x < xKoniec && y < yKoniec; x++, y++)
                     if (Szachownica[x][y].rodzaj != "puste")
                     {
                         nieMozliwy = true;
@@ -367,11 +319,145 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
             return 1;
         }
     }
+    else if (FigStart.rodzaj == "dama")
+    {
+        if (FigStart.y != yK && FigStart.x != xK)
+        {
+            bool nieMozliwy = true;
+            if (FigStart.x - xK > 0)
+            {
+                if (FigStart.y - yK > 0)
+                {
+                    // czy ruch jest w ogole mozliwy
+                    for (int x = xStart - 1, y = yStart - 1; x >= xKoniec && y >= yKoniec; x--, y--)
+                        if (x == xKoniec && y == yKoniec)
+                            nieMozliwy = false;
+
+                    // czy po drodze nie ma innych figur
+                    for (int x = xStart - 1, y = yStart - 1; x > xKoniec && y > yKoniec; x--, y--)
+                        if (Szachownica[x][y].rodzaj != "puste")
+                        {
+                            nieMozliwy = true;
+                            break;
+                        }
+                }
+                else
+                {
+                    for (int x = xStart - 1, y = yStart + 1; x >= xKoniec && y <= yKoniec; x--, y++)
+                        if (x == xKoniec && y == yKoniec)
+                            nieMozliwy = false;
+
+                    for (int x = xStart - 1, y = yStart + 1; x > xKoniec && y < yKoniec; x--, y++)
+                        if (Szachownica[x][y].rodzaj != "puste")
+                        {
+                            nieMozliwy = true;
+                            break;
+                        }
+                }
+            }
+            else
+            {
+                if (FigStart.y - yK > 0)
+                {
+                    for (int x = xStart + 1, y = yStart - 1; x <= xKoniec && y >= yKoniec; x++, y--)
+                        if (x == xKoniec && y == yKoniec)
+                            nieMozliwy = false;
+
+                    for (int x = xStart + 1, y = yStart - 1; x < xKoniec && y > yKoniec; x++, y--)
+                        if (Szachownica[x][y].rodzaj != "puste")
+                        {
+                            nieMozliwy = true;
+                            break;
+                        }
+                }
+                else
+                {
+                    for (int x = xStart + 1, y = yStart + 1; x <= xKoniec && y <= yKoniec; x++, y++)
+                        if (x == xKoniec && y == yKoniec)
+                            nieMozliwy = false;
+
+                    for (int x = xStart + 1, y = yStart + 1; x < xKoniec && y < yKoniec; x++, y++)
+                        if (Szachownica[x][y].rodzaj != "puste")
+                        {
+                            nieMozliwy = true;
+                            break;
+                        }
+                }
+            }
+            if (nieMozliwy)
+            {
+                cout << "Ruch niemozliwy." << endl;
+                return 1;
+            }
+        }
+        else
+        {
+            bool nieMozliwy = false;
+            if (FigStart.y != yK)
+            {
+                if (FigStart.y - yK > 0)
+                {
+                    for (int i = yStart - 1; i > yKoniec; i--)
+                    {
+                        if (Szachownica[xStart][i].rodzaj != "puste")
+                        {
+                            nieMozliwy = true;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = yStart + 1; i < yKoniec; i++)
+                    {
+                        if (Szachownica[xStart][i].rodzaj != "puste")
+                        {
+                            nieMozliwy = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (FigStart.x != xK)
+                {
+                    if (FigStart.x - xK > 0)
+                    {
+                        for (int i = xStart - 1; i > xKoniec; i--)
+                        {
+                            if (Szachownica[i][yStart].rodzaj != "puste")
+                            {
+                                nieMozliwy = true;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int i = xStart + 1; i < xKoniec; i++)
+                        {
+                            if (Szachownica[i][yStart].rodzaj != "puste")
+                            {
+                                nieMozliwy = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (nieMozliwy)
+            {
+                cout << "Ruch niemozliwy." << endl;
+                return 1;
+            }
+        }
+    }
     rusz(FigStart, xKoniec, yKoniec);
-    if (aktualnyRuch == 'b')
-        aktualnyRuch = 'c';
-    else
-        aktualnyRuch = 'b';
+    // if (aktualnyRuch == 'b')
+    //     aktualnyRuch = 'c';
+    // else
+    //     aktualnyRuch = 'b';
     return 0;
 }
 
