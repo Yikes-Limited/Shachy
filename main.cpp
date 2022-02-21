@@ -87,7 +87,7 @@ void ruszFrancuz(Figura Fig, int xKoniec, int yKoniec)
     {
         kolor -= 1;
     }
-    Figura* Puste = new Figura();
+    Figura *Puste = new Figura();
     Szachownica[xKoniec][yKoniec + kolor].przypisz(Puste);
     swap(Szachownica[Fig.x - 1][Fig.y - 1], Szachownica[xKoniec][yKoniec]);
 
@@ -135,14 +135,14 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
                         return 1;
                     }
                 }
-                //francuz
-                else if (FigStart.y == 4 && Szachownica[xKoniec][yKoniec - 1].rodzaj == "puste" && FigKoniec.rodzaj == "puste")//czy figura jest "pod" pionkiem
+                // francuz
+                else if (FigStart.y == 4 && Szachownica[xKoniec][yKoniec + 1].rodzaj == "pionek" && FigKoniec.rodzaj == "puste") // czy figura jest "pod" pionkiem
                 {
                     ruszFrancuz(FigStart, xKoniec, yKoniec);
                     return 0;
                 }
                 // bicie
-                else if (FigStart.x - xK == 1 || xK - FigStart.x == 1 )
+                else if (FigStart.x - xK == 1 || xK - FigStart.x == 1)
                 {
                     if (FigKoniec.kolor != 'c')
                     {
@@ -182,6 +182,12 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
                         cout << "Ruch niemozliwy. Miejsce nie jest puste" << endl;
                         return 1;
                     }
+                }
+                // francuz
+                else if (FigStart.y == 5 && Szachownica[xKoniec][yKoniec - 1].rodzaj == "pionek" && FigKoniec.rodzaj == "puste") // czy figura jest "pod" pionkiem
+                {
+                    ruszFrancuz(FigStart, xKoniec, yKoniec);
+                    return 0;
                 }
                 // bicie
                 else if (FigStart.x - xK == 1 || xK - FigStart.x == 1)
@@ -650,10 +656,7 @@ int main()
 //    1 2 3 4 5 6 7 8 X
 //         BIAŁE
 
-
-
-
-//todo
-// roszadza
-// szach mat
-// szach
+// todo
+//  roszadza
+//  szach mat
+//  szach
