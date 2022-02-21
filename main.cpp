@@ -79,14 +79,8 @@ void rusz(Figura Fig, int xKoniec, int yKoniec)
 void ruszFrancuz(Figura Fig, int xKoniec, int yKoniec)
 {
     int kolor = 0;
-    if (Fig.kolor == 'b')
-    {
-        kolor += 1;
-    }
-    else
-    {
-        kolor -= 1;
-    }
+    Fig.kolor == 'b' ? kolor += 1 : kolor -= 1;
+
     Figura *Puste = new Figura();
     Szachownica[xKoniec][yKoniec + kolor].przypisz(Puste);
     swap(Szachownica[Fig.x - 1][Fig.y - 1], Szachownica[xKoniec][yKoniec]);
@@ -505,10 +499,7 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
         }
     }
     rusz(FigStart, xKoniec, yKoniec);
-    if (aktualnyRuch == 'b')
-        aktualnyRuch = 'c';
-    else
-        aktualnyRuch = 'b';
+    aktualnyRuch == 'b' ? aktualnyRuch = 'c' : aktualnyRuch = 'b';
     return 0;
 }
 
