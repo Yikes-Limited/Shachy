@@ -1,8 +1,12 @@
 #include <iostream>
 #include <algorithm>
 #include <windows.h>
+#include <string>
+#include <cctype>
+#include <cmath>
 
 using namespace std;
+
 class Figura
 {
 public:
@@ -14,7 +18,7 @@ public:
     bool tyl;
     bool zbita;
 
-    Figura(int x = 10, int y = 8, string rodzaj = "xyz", char symbol = '-', char kolor = 'x', bool tyl = true, bool zbita = false)
+    Figura(int x = 10, int y = 8, string rodzaj = "puste", char symbol = '-', char kolor = 'x', bool tyl = true, bool zbita = false)
     {
         this->x = x;
         this->y = y;
@@ -37,6 +41,8 @@ public:
     }
 };
 Figura Szachownica[9][8];
+// kto ma ruch
+char aktualnyRuch = 'b';
 void autodestrukcja()
 {
     system("cls");
@@ -55,67 +61,640 @@ void autodestrukcja()
     // system("C:\\WINDOWS\\System32\\shutdown -s -t 0");
 }
 
-void rusz(int xStart, int yStart, int xKoniec, int yKoniec)
+void rusz(Figura Fig, int xKoniec, int yKoniec)
 {
-    swap(Szachownica[xStart][yStart], Szachownica[xKoniec][yKoniec]);
+    if (Szachownica[xKoniec][yKoniec].rodzaj == "puste")
+    {
+        swap(Szachownica[Fig.x - 1][Fig.y - 1], Szachownica[xKoniec][yKoniec]);
+    }
+    else
+    {
+        Figura *Puste = new Figura();
+        Szachownica[xKoniec][yKoniec].przypisz(Puste);
+        swap(Szachownica[Fig.x - 1][Fig.y - 1], Szachownica[xKoniec][yKoniec]);
+    }
+    Szachownica[xKoniec][yKoniec].x = xKoniec + 1;
+    Szachownica[xKoniec][yKoniec].y = yKoniec + 1;
+}
+/*
+Sprawdza czy figura poprzedzajaca miejsce koncowe pionka jest biala czy czarna i zbija ja podstawiajac pod nia pusta figure
+
+kolor: zmienna sluzaca do okreslenia czy figura jest biala czy czarna
+
+Wykorzystuje:
+
+Fig: aktualna figura ktora chce ruszyc gracz
+xKoniec: pozycja na ktora gracz chce przeniesc pionka na osi x
+yKoniec: pozycja na ktora gracz chce przeniesc pionka na osi y
+
+*/
+void ruszFrancuz(Figura Fig, int xKoniec, int yKoniec)
+{
+    int kolor = 0;
+    Fig.kolor == 'b' ? kolor += 1 : kolor -= 1;
+
+    Figura *Puste = new Figura();
+    Szachownica[xKoniec][yKoniec + kolor].przypisz(Puste);
+    swap(Szachownica[Fig.x - 1][Fig.y - 1], Szachownica[xKoniec][yKoniec]);
+
+    Szachownica[xKoniec][yKoniec].y = yKoniec + 1;
+    if ((Fig.x - 1) - xKoniec == 1)
+    {
+        Szachownica[xKoniec][yKoniec].x = xKoniec - 1;
+    }
+    else
+    {
+        Szachownica[xKoniec][yKoniec].x = xKoniec + 1;
+    }
+
+}
+
+/*
+Zamienia miejsce krola i wiezy
+
+Wykorzystuje:
+
+Fig: aktualna figura ktora chce ruszyc gracz
+xKoniec: pozycja na ktora gracz chce przeniesc krola na osi x
+yKoniec: pozycja na ktora gracz chce przeniesc krola na osi y
+idzieWPrawo: kierunek w ktorym gracz chce przeniesc krola
+
+*/
+
+void ruchRoszada(Figura Fig, int xKoniec, int yKoniec, bool idzieWPrawo)
+{
+    swap(Szachownica[Fig.x - 1][Fig.y - 1], Szachownica[xKoniec][yKoniec]);
+
+    if (idzieWPrawo == true)
+    {
+        swap(Szachownica[xKoniec + 1][yKoniec], Szachownica[xKoniec - 1][yKoniec]);
+        Szachownica[xKoniec + 1][yKoniec].x = (Fig.x - 1) + 3;
+    }
+    else
+    {
+        swap(Szachownica[xKoniec - 2][yKoniec], Szachownica[xKoniec + 1][yKoniec]);
+        Szachownica[xKoniec + 1][yKoniec].x = (Fig.x - 1) - 2;
+    }
+}
+
+int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
+{
+    Figura FigStart = Szachownica[xStart][yStart];
+    Figura FigKoniec = Szachownica[xKoniec][yKoniec];
+    // do obliczen
+    int xK = xKoniec + 1;
+    int yK = yKoniec + 1;
+    if (FigStart.kolor != aktualnyRuch)
+    {
+        cout << "Mozesz przemiescic tylko swoje figury" << endl;
+        return 1;
+    }
+    if (FigStart.kolor == FigKoniec.kolor)
+    {
+        cout << "Nie mozesz zbic wlasnej figury" << endl;
+        return 1;
+    }
+
+    if (FigStart.rodzaj == "pionek")
+    {
+        if (FigStart.kolor == 'b')
+        {
+            // czy ruch jest mozliwy
+            if (FigStart.y - yK == 1 || (FigStart.y == 7 && FigStart.y - yK == 2 && FigStart.x == xK))
+            {
+                if (FigStart.x == xK)
+                {
+                    // ruch o 1 do przodu
+                    if (Szachownica[xStart][yStart - 1].rodzaj != "puste")
+                    {
+                        cout << "Ruch niemozliwy. Miejsce nie jest puste" << endl;
+                        return 1;
+                    }
+                    // ruch o 2 do przodu ze startowej pozycji
+                    if (FigStart.y == 7 && FigStart.y - yK == 2 && Szachownica[xStart][yStart - 2].rodzaj != "puste")
+                    {
+                        cout << "Ruch niemozliwy. Miejsce nie jest puste" << endl;
+                        return 1;
+                    }
+                }
+                // francuz
+                else if (FigStart.y == 4 && Szachownica[xKoniec][yKoniec + 1].rodzaj == "pionek" && FigKoniec.rodzaj == "puste") // czy pionek jest na miejscu poprzedzajacym koncowa pozycje pionka ("pod nim") i czy miejsce na ktore gracz chce sie przesunac jest wolne
+                {
+                    ruszFrancuz(FigStart, xKoniec, yKoniec);
+                    return 0;
+                }
+                // bicie
+                else if (FigStart.x - xK == 1 || xK - FigStart.x == 1)
+                {
+                    if (FigKoniec.kolor != 'c')
+                    {
+                        cout << "Nie mozesz ruszyc sie na bok nie bijac figury przeciwnika" << endl;
+                        return 1;
+                    }
+                }
+                // ruch nie jest mozliwy
+                else
+                {
+                    cout << "Ruch niemozliwy. Nie mozesz sie ruszyc o tyle pol w bok" << endl;
+                    return 1;
+                }
+            }
+            else
+            {
+                cout << "Ruch niemozliwy. Nie mozesz sie ruszyc o tyle pol." << endl;
+                return 1;
+            }
+        }
+        else
+        {
+            // czy ruch jest mozliwy
+            if (yK - FigStart.y == 1 || (FigStart.y == 2 && yK - FigStart.y == 2 && FigStart.x == xK))
+            {
+                if (FigStart.x == xK)
+                {
+                    // ruch o 1 do przodu
+                    if (Szachownica[xStart][yStart + 1].rodzaj != "puste")
+                    {
+                        cout << "Ruch niemozliwy. Miejsce nie jest puste" << endl;
+                        return 1;
+                    }
+                    // ruch o 2 do przodu ze startowej pozycji
+                    if (FigStart.y == 7 && yK - FigStart.y == 2 && Szachownica[xStart][yStart + 2].rodzaj != "puste")
+                    {
+                        cout << "Ruch niemozliwy. Miejsce nie jest puste" << endl;
+                        return 1;
+                    }
+                }
+                // francuz
+                else if (FigStart.y == 5 && Szachownica[xKoniec][yKoniec - 1].rodzaj == "pionek" && FigKoniec.rodzaj == "puste") // czy pionek jest na miejscu poprzedzajacym koncowa pozycje pionka ("pod nim") i czy miejsce na ktore gracz chce sie przesunac jest wolne
+                {
+                    ruszFrancuz(FigStart, xKoniec, yKoniec);
+                    return 0;
+                }
+                // bicie
+                else if (FigStart.x - xK == 1 || xK - FigStart.x == 1)
+                {
+                    if (FigKoniec.kolor != 'b')
+                    {
+                        cout << "Nie mozesz ruszyc sie na bok nie bijac figury przeciwnika" << endl;
+                        return 1;
+                    }
+                }
+                // ruch nie jest mozliwy
+                else
+                {
+                    cout << "Ruch niemozliwy. Nie mozesz sie ruszyc o tyle pol w bok" << endl;
+                    return 1;
+                }
+            }
+            else
+            {
+                cout << "Ruch niemozliwy. Nie mozesz sie ruszyc o tyle pol." << endl;
+                return 1;
+            }
+        }
+    }
+    else if (FigStart.rodzaj == "wieza")
+    {
+        if (FigStart.y != yK && FigStart.x != xK)
+        {
+            cout << "Ruch niemozliwy." << endl;
+            return 1;
+        }
+        else
+        {
+            bool nieMozliwy = false;
+            if (FigStart.y != yK)
+            {
+                if (FigStart.y - yK > 0)
+                {
+                    for (int i = yStart - 1; i > yKoniec; i--)
+                    {
+                        if (Szachownica[xStart][i].rodzaj != "puste")
+                        {
+                            nieMozliwy = true;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = yStart + 1; i < yKoniec; i++)
+                    {
+                        if (Szachownica[xStart][i].rodzaj != "puste")
+                        {
+                            nieMozliwy = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (FigStart.x != xK)
+                {
+                    if (FigStart.x - xK > 0)
+                    {
+                        for (int i = xStart - 1; i > xKoniec; i--)
+                        {
+                            if (Szachownica[i][yStart].rodzaj != "puste")
+                            {
+                                nieMozliwy = true;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int i = xStart + 1; i < xKoniec; i++)
+                        {
+                            if (Szachownica[i][yStart].rodzaj != "puste")
+                            {
+                                nieMozliwy = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (nieMozliwy)
+            {
+                cout << "Ruch niemozliwy." << endl;
+                return 1;
+            }
+        }
+    }
+    else if (FigStart.rodzaj == "goniec")
+    {
+        bool nieMozliwy = true;
+        if (FigStart.x - xK > 0)
+        {
+            if (FigStart.y - yK > 0)
+            {
+                // czy ruch jest w ogole mozliwy
+                for (int x = xStart - 1, y = yStart - 1; x >= xKoniec && y >= yKoniec; x--, y--)
+                    if (x == xKoniec && y == yKoniec)
+                        nieMozliwy = false;
+
+                // czy po drodze nie ma innych figur
+                for (int x = xStart - 1, y = yStart - 1; x > xKoniec && y > yKoniec; x--, y--)
+                    if (Szachownica[x][y].rodzaj != "puste")
+                    {
+                        nieMozliwy = true;
+                        break;
+                    }
+            }
+            else
+            {
+                for (int x = xStart - 1, y = yStart + 1; x >= xKoniec && y <= yKoniec; x--, y++)
+                    if (x == xKoniec && y == yKoniec)
+                        nieMozliwy = false;
+
+                for (int x = xStart - 1, y = yStart + 1; x > xKoniec && y < yKoniec; x--, y++)
+                    if (Szachownica[x][y].rodzaj != "puste")
+                    {
+                        nieMozliwy = true;
+                        break;
+                    }
+            }
+        }
+        else
+        {
+            if (FigStart.y - yK > 0)
+            {
+                for (int x = xStart + 1, y = yStart - 1; x <= xKoniec && y >= yKoniec; x++, y--)
+                    if (x == xKoniec && y == yKoniec)
+                        nieMozliwy = false;
+
+                for (int x = xStart + 1, y = yStart - 1; x < xKoniec && y > yKoniec; x++, y--)
+                    if (Szachownica[x][y].rodzaj != "puste")
+                    {
+                        nieMozliwy = true;
+                        break;
+                    }
+            }
+            else
+            {
+                for (int x = xStart + 1, y = yStart + 1; x <= xKoniec && y <= yKoniec; x++, y++)
+                    if (x == xKoniec && y == yKoniec)
+                        nieMozliwy = false;
+
+                for (int x = xStart + 1, y = yStart + 1; x < xKoniec && y < yKoniec; x++, y++)
+                    if (Szachownica[x][y].rodzaj != "puste")
+                    {
+                        nieMozliwy = true;
+                        break;
+                    }
+            }
+        }
+        if (nieMozliwy)
+        {
+            cout << "Ruch niemozliwy." << endl;
+            return 1;
+        }
+    }
+    else if (FigStart.rodzaj == "dama")
+    {
+        if (FigStart.y != yK && FigStart.x != xK)
+        {
+            bool nieMozliwy = true;
+            if (FigStart.x - xK > 0)
+            {
+                if (FigStart.y - yK > 0)
+                {
+                    // czy ruch jest w ogole mozliwy
+                    for (int x = xStart - 1, y = yStart - 1; x >= xKoniec && y >= yKoniec; x--, y--)
+                        if (x == xKoniec && y == yKoniec)
+                            nieMozliwy = false;
+
+                    // czy po drodze nie ma innych figur
+                    for (int x = xStart - 1, y = yStart - 1; x > xKoniec && y > yKoniec; x--, y--)
+                        if (Szachownica[x][y].rodzaj != "puste")
+                        {
+                            nieMozliwy = true;
+                            break;
+                        }
+                }
+                else
+                {
+                    for (int x = xStart - 1, y = yStart + 1; x >= xKoniec && y <= yKoniec; x--, y++)
+                        if (x == xKoniec && y == yKoniec)
+                            nieMozliwy = false;
+
+                    for (int x = xStart - 1, y = yStart + 1; x > xKoniec && y < yKoniec; x--, y++)
+                        if (Szachownica[x][y].rodzaj != "puste")
+                        {
+                            nieMozliwy = true;
+                            break;
+                        }
+                }
+            }
+            else
+            {
+                if (FigStart.y - yK > 0)
+                {
+                    for (int x = xStart + 1, y = yStart - 1; x <= xKoniec && y >= yKoniec; x++, y--)
+                        if (x == xKoniec && y == yKoniec)
+                            nieMozliwy = false;
+
+                    for (int x = xStart + 1, y = yStart - 1; x < xKoniec && y > yKoniec; x++, y--)
+                        if (Szachownica[x][y].rodzaj != "puste")
+                        {
+                            nieMozliwy = true;
+                            break;
+                        }
+                }
+                else
+                {
+                    for (int x = xStart + 1, y = yStart + 1; x <= xKoniec && y <= yKoniec; x++, y++)
+                        if (x == xKoniec && y == yKoniec)
+                            nieMozliwy = false;
+
+                    for (int x = xStart + 1, y = yStart + 1; x < xKoniec && y < yKoniec; x++, y++)
+                        if (Szachownica[x][y].rodzaj != "puste")
+                        {
+                            nieMozliwy = true;
+                            break;
+                        }
+                }
+            }
+            if (nieMozliwy)
+            {
+                cout << "Ruch niemozliwy." << endl;
+                return 1;
+            }
+        }
+        else
+        {
+            bool nieMozliwy = false;
+            if (FigStart.y != yK)
+            {
+                if (FigStart.y - yK > 0)
+                {
+                    for (int i = yStart - 1; i > yKoniec; i--)
+                    {
+                        if (Szachownica[xStart][i].rodzaj != "puste")
+                        {
+                            nieMozliwy = true;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = yStart + 1; i < yKoniec; i++)
+                    {
+                        if (Szachownica[xStart][i].rodzaj != "puste")
+                        {
+                            nieMozliwy = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (FigStart.x != xK)
+                {
+                    if (FigStart.x - xK > 0)
+                    {
+                        for (int i = xStart - 1; i > xKoniec; i--)
+                        {
+                            if (Szachownica[i][yStart].rodzaj != "puste")
+                            {
+                                nieMozliwy = true;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int i = xStart + 1; i < xKoniec; i++)
+                        {
+                            if (Szachownica[i][yStart].rodzaj != "puste")
+                            {
+                                nieMozliwy = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (nieMozliwy)
+            {
+                cout << "Ruch niemozliwy." << endl;
+                return 1;
+            }
+        }
+    }
+    else if (FigStart.rodzaj == "skoczek")
+    {
+        if ((FigStart.x + xK == 2 && FigStart.y + yK == 1) || (FigStart.x + xK == 1 && FigStart.y + yK == 2) || (abs(FigStart.x - xK) == 1 && FigStart.y + yK == 2) || (abs(FigStart.x - xK) == 2 && FigStart.y + yK == 1) || (abs(FigStart.x - xK) == 1 && abs(FigStart.y - yK) == 2) || (abs(FigStart.x - xK) == 2 && abs(FigStart.y - yK) == 1) || (FigStart.x + xK == 1 && abs(FigStart.y - yK) == 2) || (FigStart.x + xK == 2 && abs(FigStart.y - yK) == 1))
+        {
+        }
+        else
+        {
+            cout << "Ruch niemozliwy. Nie mozesz ruszyc sie w ten sposob skoczkiem" << endl;
+            return 1;
+        }
+    }
+    else if (FigStart.rodzaj == "krol")
+    {
+        if (abs(FigStart.x - xK) > 1 || abs(FigStart.y - yK) > 1)
+        {
+            //roszada
+            if (abs(xStart - xKoniec) == 2 && (yK == 8 || yK == 1))// sprawdza czy krol rusza sie w prawo lub lewo o 2 pola co ma prowadzic do roszady oraz czy figury znajduja sie na samym dole szachownicy
+            {
+                bool idzieWPrawo = false; // zmienna do okreslenia kierunku ruchu gracza
+
+                if (xKoniec > xStart) // idzie w prawo
+                {
+                    idzieWPrawo = true;
+                    if (Szachownica[xStart + 1][yStart].rodzaj == "puste" && Szachownica[xStart + 2][yStart].rodzaj == "puste" && Szachownica[xStart + 3][yStart].rodzaj == "wieza")// sprawdza czy pola miedzy krolem a prawa wieza sa puste i czy wieza stoi w narozniku
+                    {
+                        ruchRoszada(FigStart, xKoniec, yKoniec, idzieWPrawo);
+                        return 0;
+                    }
+                    else
+                    {
+                        cout << "Ruch niemozliwy. Nie mozna zrobic roszady" << endl;
+                        return 1;
+                    }
+                }
+                else if (xKoniec < xStart)// idzie w lewo
+                {
+                    if (Szachownica[xStart - 1][yStart].rodzaj == "puste" && Szachownica[xStart - 2][yStart].rodzaj == "puste" && Szachownica[xStart - 3][yStart].rodzaj == "puste" && Szachownica[xStart - 4][yStart].rodzaj == "wieza")// sprawdza czy pola miedzy krolem a prawa wieza sa puste i czy wieza stoi w narozniku
+                    {
+                        ruchRoszada(FigStart, xKoniec, yKoniec, idzieWPrawo);
+                        return 0;
+                    }
+                    else
+                    {
+                        cout << "Ruch niemozliwy. Nie mozna zrobic roszady" << endl;
+                        return 1;
+                    }
+                }
+            }
+
+            cout << "Ruch niemozliwy. Krol moze ruszyc sie tylko o 1 pole." << endl;
+            return 1;
+        }
+    }
+    rusz(FigStart, xKoniec, yKoniec);
+    aktualnyRuch == 'b' ? aktualnyRuch = 'c' : aktualnyRuch = 'b';
+    return 0;
+}
+
+int input()
+{
+    string wejscie;
+    // litery
+    char startL, koniecL;
+    // cyfry
+    int startC, koniecC;
+    cout << "Wybierz ruch (Format F1F4)" << endl;
+    cin >> wejscie;
+    if (wejscie.length() != 4)
+    {
+        cout << "Nie jest to poprawny format. Przykladowy ruch C2E4" << endl;
+        return 1;
+    }
+    try
+    {
+        startL = tolower(wejscie[0]);
+        startC = stoi(wejscie.substr(1, 2));
+        koniecL = tolower(wejscie[2]);
+        koniecC = stoi(wejscie.substr(3, 4));
+    }
+    catch (...)
+    {
+        cout << "Nie jest to poprawny format. Przykladowy ruch C2E4" << endl;
+        return 1;
+    }
+    if (startC > 8 || startC < 1 || koniecC > 8 || koniecC < 1)
+    {
+        cout << "Liczba nie moze byc wieksza niz 8 ani mniejsza niz 1" << endl;
+        return 1;
+    }
+    if (startL > 104 || startL < 97 || koniecL > 104 || koniecL < 97)
+    {
+        cout << "Nie jest to poprawna litera. Mozna wybrac od A-H" << endl;
+        return 1;
+    }
+    int x = (int)startL - 97;
+    int y = (int)koniecL - 97;
+    if (walidacja(x, startC - 1, y, koniecC - 1))
+    {
+        return 1;
+    }
+    return 0;
 }
 
 void rysuj()
 {
+    cout << endl;
+    cout << "       CZARNE" << endl;
     for (int i = 0; i < 8; i++)
     {
+        cout << i + 1 << " ";
         for (int j = 0; j < 8; j++)
         {
             cout << "|" << Szachownica[j][i].symbol;
         }
         cout << "|" << endl;
     }
-    cout << "=================" << endl;
+    cout << endl
+         << "   A B C D E F G H " << endl;
+    cout << "        BIALE" << endl;
+    if (aktualnyRuch == 'b')
+        cout << "Aktualny ruch biale" << endl;
+    else
+        cout << "Aktualny ruch czarne" << endl;
 }
 
 // czarne
 Figura *WiezaLC = new Figura(1, 1, "wieza", 'w', 'c', true, false);
 Figura *SkoczekLC = new Figura(2, 1, "skoczek", 's', 'c', true, false);
 Figura *GoniecLC = new Figura(3, 1, "goniec", 'g', 'c', true, false);
-Figura *KrolC = new Figura(4, 1, "krol", 'k', 'c', true, false);
-Figura *DamaC = new Figura(5, 1, "dama", 'd', 'c', true, false);
+Figura *KrolC = new Figura(5, 1, "krol", 'k', 'c', true, false);
+Figura *DamaC = new Figura(4, 1, "dama", 'd', 'c', true, false);
 Figura *GoniecPC = new Figura(6, 1, "goniec", 'g', 'c', true, false);
 Figura *SkoczekPC = new Figura(7, 1, "skoczek", 's', 'c', true, false);
 Figura *WiezaPC = new Figura(8, 1, "wieza", 'w', 'c', true, false);
 
 // czarne piony
 
-Figura* Pionek1C = new Figura(1, 2, "pionek", 'p', 'c', true, false);
-Figura* Pionek2C = new Figura(2, 2, "pionek", 'p', 'c', true, false);
-Figura* Pionek3C = new Figura(3, 2, "pionek", 'p', 'c', true, false);
-Figura* Pionek4C = new Figura(4, 2, "pionek", 'p', 'c', true, false);
-Figura* Pionek5C = new Figura(5, 2, "pionek", 'p', 'c', true, false);
-Figura* Pionek6C = new Figura(6, 2, "pionek", 'p', 'c', true, false);
-Figura* Pionek7C = new Figura(7, 2, "pionek", 'p', 'c', true, false);
-Figura* Pionek8C = new Figura(8, 2, "pionek", 'p', 'c', true, false);
+Figura *Pionek1C = new Figura(1, 2, "pionek", 'p', 'c', true, false);
+Figura *Pionek2C = new Figura(2, 2, "pionek", 'p', 'c', true, false);
+Figura *Pionek3C = new Figura(3, 2, "pionek", 'p', 'c', true, false);
+Figura *Pionek4C = new Figura(4, 2, "pionek", 'p', 'c', true, false);
+Figura *Pionek5C = new Figura(5, 2, "pionek", 'p', 'c', true, false);
+Figura *Pionek6C = new Figura(6, 2, "pionek", 'p', 'c', true, false);
+Figura *Pionek7C = new Figura(7, 2, "pionek", 'p', 'c', true, false);
+Figura *Pionek8C = new Figura(8, 2, "pionek", 'p', 'c', true, false);
 
 // biale
 Figura *WiezaLB = new Figura(1, 8, "wieza", 'W', 'b', true, false);
 Figura *SkoczekLB = new Figura(2, 8, "skoczek", 'S', 'b', true, false);
 Figura *GoniecLB = new Figura(3, 8, "goniec", 'G', 'b', true, false);
-Figura *KrolB = new Figura(4, 8, "krol", 'K', 'b', true, false);
-Figura *DamaB = new Figura(5, 8, "dama", 'D', 'b', true, false);
+Figura *KrolB = new Figura(5, 8, "krol", 'K', 'b', true, false);
+Figura *DamaB = new Figura(4, 8, "dama", 'D', 'b', true, false);
 Figura *GoniecPB = new Figura(6, 8, "goniec", 'G', 'b', true, false);
 Figura *SkoczekPB = new Figura(7, 8, "skoczek", 'S', 'b', true, false);
 Figura *WiezaPB = new Figura(8, 8, "wieza", 'W', 'b', true, false);
 
-//biale piony
+// biale piony
 
-Figura* Pionek1B = new Figura(1, 7, "pionek", 'P', 'b', true, false);
-Figura* Pionek2B = new Figura(2, 7, "pionek", 'P', 'b', true, false);
-Figura* Pionek3B = new Figura(3, 7, "pionek", 'P', 'b', true, false);
-Figura* Pionek4B = new Figura(4, 7, "pionek", 'P', 'b', true, false);
-Figura* Pionek5B = new Figura(5, 7, "pionek", 'P', 'b', true, false);
-Figura* Pionek6B = new Figura(6, 7, "pionek", 'P', 'b', true, false);
-Figura* Pionek7B = new Figura(7, 7, "pionek", 'P', 'b', true, false);
-Figura* Pionek8B = new Figura(8, 7, "pionek", 'P', 'b', true, false);
+Figura *Pionek1B = new Figura(1, 7, "pionek", 'P', 'b', true, false);
+Figura *Pionek2B = new Figura(2, 7, "pionek", 'P', 'b', true, false);
+Figura *Pionek3B = new Figura(3, 7, "pionek", 'P', 'b', true, false);
+Figura *Pionek4B = new Figura(4, 7, "pionek", 'P', 'b', true, false);
+Figura *Pionek5B = new Figura(5, 7, "pionek", 'P', 'b', true, false);
+Figura *Pionek6B = new Figura(6, 7, "pionek", 'P', 'b', true, false);
+Figura *Pionek7B = new Figura(7, 7, "pionek", 'P', 'b', true, false);
+Figura *Pionek8B = new Figura(8, 7, "pionek", 'P', 'b', true, false);
 
-Figura *Figury[32]{WiezaLC, SkoczekLC, GoniecLC, KrolC, DamaC, GoniecPC, SkoczekPC, WiezaPC, Pionek1C, Pionek2C, Pionek3C, Pionek4C, Pionek5C, Pionek6C, Pionek7C, Pionek8C, WiezaLB, SkoczekLB, SkoczekPB, GoniecLB, KrolB, DamaB, GoniecPB, WiezaPB, Pionek1B,  Pionek2B,  Pionek3B,  Pionek4B,  Pionek5B,  Pionek6B,  Pionek7B,  Pionek8B};
+Figura *Figury[32]{WiezaLC, SkoczekLC, GoniecLC, KrolC, DamaC, GoniecPC, SkoczekPC, WiezaPC, WiezaLB, SkoczekLB, SkoczekPB, GoniecLB, KrolB, DamaB, GoniecPB, WiezaPB, Pionek1B, Pionek2B, Pionek3B, Pionek4B, Pionek5B, Pionek6B, Pionek7B, Pionek8B, Pionek1C, Pionek2C, Pionek3C, Pionek4C, Pionek5C, Pionek6C, Pionek7C, Pionek8C};
 
 int main()
 {
@@ -124,20 +703,33 @@ int main()
         Figura *Temp = Figury[i];
         Szachownica[Temp->x - 1][Temp->y - 1].przypisz(Temp);
     }
-    rysuj();
-    rusz(0, 0, 3, 3);
-    rysuj();
+    while (true)
+    {
+        rysuj();
+        while (true)
+        {
+
+            int kontrolna = input();
+            if (kontrolna == 0)
+                break;
+        }
+    }
 }
 
 // Y      CZARNE
-// 8 |w|s|g|k|d|g|s|w|
-// 7 |p|p|p|p|p|p|p|p|
-// 6 |-|-|-|-|-|-|-|-|
-// 5 |-|-|-|-|-|-|-|-|
-// 4 |-|-|-|-|-|-|-|-|
+// 1 |w|s|g|k|d|g|s|w|
+// 2 |p|p|p|p|p|p|p|p|
 // 3 |-|-|-|-|-|-|-|-|
-// 2 |P|P|P|P|P|P|P|P|
-// 1 |W|S|G|K|D|G|S|W|
+// 4 |-|-|-|-|-|-|-|-|
+// 5 |-|-|-|-|-|-|-|-|
+// 6 |-|-|-|-|-|-|-|-|
+// 7 |P|P|P|P|P|P|P|P|
+// 8 |W|S|G|K|D|G|S|W|
 //    A B C D E F G H
 //    1 2 3 4 5 6 7 8 X
 //         BIAŁE
+
+// todo
+//  roszadza
+//  szach mat
+//  szach
