@@ -553,6 +553,7 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
                     if (Szachownica[xStart + 1][yStart].rodzaj == "puste" && Szachownica[xStart + 2][yStart].rodzaj == "puste" && Szachownica[xStart + 3][yStart].rodzaj == "wieza")// sprawdza czy pola miedzy krolem a prawa wieza sa puste i czy wieza stoi w narozniku
                     {
                         ruchRoszada(FigStart, xKoniec, yKoniec, idzieWPrawo);
+                        aktualnyRuch == 'b' ? aktualnyRuch = 'c' : aktualnyRuch = 'b';
                         return 0;
                     }
                     else
@@ -566,6 +567,7 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
                     if (Szachownica[xStart - 1][yStart].rodzaj == "puste" && Szachownica[xStart - 2][yStart].rodzaj == "puste" && Szachownica[xStart - 3][yStart].rodzaj == "puste" && Szachownica[xStart - 4][yStart].rodzaj == "wieza")// sprawdza czy pola miedzy krolem a prawa wieza sa puste i czy wieza stoi w narozniku
                     {
                         ruchRoszada(FigStart, xKoniec, yKoniec, idzieWPrawo);
+                        aktualnyRuch == 'b' ? aktualnyRuch = 'c' : aktualnyRuch = 'b';
                         return 0;
                     }
                     else
