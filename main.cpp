@@ -40,7 +40,7 @@ public:
         this->zbita = Figura->zbita;
     }
 };
-Figura Szachownica[9][8];
+Figura Szachownica[8][8];
 // kto ma ruch
 char aktualnyRuch = 'b';
 void autodestrukcja()
@@ -75,7 +75,90 @@ void rusz(Figura Fig, int xKoniec, int yKoniec)
     }
     Szachownica[xKoniec][yKoniec].x = xKoniec + 1;
     Szachownica[xKoniec][yKoniec].y = yKoniec + 1;
+
+    bool bezblednie = false;
+    short wybor;
+
+    if (Fig.rodzaj == "pionek" && (Szachownica[xKoniec][yKoniec].y == 1 || Szachownica[xKoniec][yKoniec].y == 8))
+    {
+        while (bezblednie == false)
+        {
+            cout << "PROMOCJA PIONKA" << endl;
+            cout << "1. Dama" << endl;
+            cout << "2. Wieza" << endl;
+            cout << "3. Goniec" << endl;
+            cout << "4. Skoczek" << endl;
+
+            cin >> wybor;
+
+            switch(wybor)
+            {
+            case 1:
+            {
+                Szachownica[xKoniec][yKoniec].rodzaj = "dama";
+                if (Fig.kolor == 'b')
+                {
+                    Szachownica[xKoniec][yKoniec].symbol = 'D';
+                }
+                else
+                {
+                    Szachownica[xKoniec][yKoniec].symbol = 'd';
+                }
+                bezblednie = true;
+                break;
+            }
+            case 2:
+            {
+                Szachownica[xKoniec][yKoniec].rodzaj = "wieza";
+                if (Fig.kolor == 'b')
+                {
+                    Szachownica[xKoniec][yKoniec].symbol = 'W';
+                }
+                else
+                {
+                    Szachownica[xKoniec][yKoniec].symbol = 'w';
+                }
+                bezblednie = true;
+                break;
+            }
+            case 3:
+            {
+                Szachownica[xKoniec][yKoniec].rodzaj = "goniec";
+                if (Fig.kolor == 'b')
+                {
+                    Szachownica[xKoniec][yKoniec].symbol = 'G';
+                }
+                else
+                {
+                    Szachownica[xKoniec][yKoniec].symbol = 'g';
+                }
+                bezblednie = true;
+                break;
+            }
+            case 4:
+            {
+                Szachownica[xKoniec][yKoniec].rodzaj = "skoczek";
+                if (Fig.kolor == 'b')
+                {
+                    Szachownica[xKoniec][yKoniec].symbol = 'S';
+                }
+                else
+                {
+                    Szachownica[xKoniec][yKoniec].symbol = 's';
+                }
+                bezblednie = true;
+                break;
+            }
+            default:
+            {
+                cout << "Wpisano liczbe z poza zakresu (1-4)" << endl;
+                break;
+            }
+            }
+        } 
+    }
 }
+
 /*
 Sprawdza czy figura poprzedzajaca miejsce koncowe pionka jest biala czy czarna i zbija ja podstawiajac pod nia pusta figure
 
@@ -86,6 +169,7 @@ Wykorzystuje:
 Fig: aktualna figura ktora chce ruszyc gracz
 xKoniec: pozycja na ktora gracz chce przeniesc pionka na osi x
 yKoniec: pozycja na ktora gracz chce przeniesc pionka na osi y
+Szachownica[][]: tabela z figurami(obiekty)
 
 */
 void ruszFrancuz(Figura Fig, int xKoniec, int yKoniec)
@@ -112,28 +196,36 @@ void ruszFrancuz(Figura Fig, int xKoniec, int yKoniec)
 /*
 Zamienia miejsce krola i wiezy
 
+xK: rzeczywista pozycja na planszy w osi x w postaci liczby
+yK: rzeczywista pozycja na planszy w osi y w postaci liczby
+
 Wykorzystuje:
 
 Fig: aktualna figura ktora chce ruszyc gracz
 xKoniec: pozycja na ktora gracz chce przeniesc krola na osi x
 yKoniec: pozycja na ktora gracz chce przeniesc krola na osi y
 idzieWPrawo: kierunek w ktorym gracz chce przeniesc krola
+Szachownica[][]: tabela z figurami(obiekty)
 
 */
 
 void ruchRoszada(Figura Fig, int xKoniec, int yKoniec, bool idzieWPrawo)
 {
-    swap(Szachownica[Fig.x - 1][Fig.y - 1], Szachownica[xKoniec][yKoniec]);
+    int xK = xKoniec + 1;
+    int yK = yKoniec + 1;
+
+    swap(Szachownica[Fig.x - 1][Fig.y - 1], Szachownica[xK - 1][yK - 1]);
+    Fig.x = xK;
 
     if (idzieWPrawo == true)
     {
         swap(Szachownica[xKoniec + 1][yKoniec], Szachownica[xKoniec - 1][yKoniec]);
-        Szachownica[xKoniec + 1][yKoniec].x = (Fig.x - 1) + 3;
+        Szachownica[xKoniec - 1][yKoniec].x = xK - 1;
     }
     else
     {
         swap(Szachownica[xKoniec - 2][yKoniec], Szachownica[xKoniec + 1][yKoniec]);
-        Szachownica[xKoniec + 1][yKoniec].x = (Fig.x - 1) - 2;
+        Szachownica[xKoniec + 1][yKoniec].x = xK + 1;
     }
 }
 
@@ -635,7 +727,7 @@ int input()
 void rysuj()
 {
     cout << endl;
-    cout << "       CZARNE" << endl;
+    cout << "       CZARNE" << endl<<endl;
     for (int i = 0; i < 8; i++)
     {
         cout << i + 1 << " ";
@@ -646,8 +738,9 @@ void rysuj()
         cout << "|" << endl;
     }
     cout << endl
-         << "   A B C D E F G H " << endl;
+         << "   A B C D E F G H " << endl<<endl;
     cout << "        BIALE" << endl;
+
     if (aktualnyRuch == 'b')
         cout << "Aktualny ruch biale" << endl;
     else
