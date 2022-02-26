@@ -41,6 +41,12 @@ public:
     }
 };
 Figura Szachownica[8][8];
+
+
+//skazniki na kroli
+Figura* krolB;
+Figura* krolC;
+
 // kto ma ruch
 char aktualnyRuch = 'b';
 void autodestrukcja()
@@ -61,6 +67,132 @@ void autodestrukcja()
     // system("C:\\WINDOWS\\System32\\shutdown -s -t 0");
 }
 
+/*
+Nadpisuje koordynaty krola jezeli zostal on ruszony
+
+Wykorzystuje:
+
+xKoniec: pozycja na ktora gracz chce przeniesc pionka na osi x
+yKoniec: pozycja na ktora gracz chce przeniesc pionka na osi y
+Szachownica[][]: tabela z figurami(obiekty)
+
+*/
+void nadpiszKrol(int xKoniec, int yKoniec)
+{
+    if (Szachownica[xKoniec][yKoniec].kolor == 'b')
+    {
+        ::krolB->x = xKoniec + 1;
+        ::krolB->y = yKoniec + 1;
+    }
+    else
+    {
+        ::krolC->x = xKoniec + 1;
+        ::krolC->y = yKoniec + 1;
+    }
+}
+
+/*
+Sprawdza czy zachodzi szach
+
+Wykorzystuje:
+
+tempKrol: chwilowe przechowanie koordynatow krola bialego lub czarnego
+xI: x figury przedstawiony w postaci indexowej
+yI: y figury przedstawiony w postaci indexowej
+Szachownica[][]: tabela z figurami(obiekty)
+
+*/
+bool szach()
+{
+    Figura* tempKrol;
+
+    if (aktualnyRuch == 'b')
+    {
+        tempKrol = ::krolC;
+    }
+    else
+    {
+        tempKrol = ::krolB;
+    }
+
+    int xI = tempKrol->x - 1;
+    int yI = tempKrol->y - 1;
+
+    //sprawdzanie czy wieza bije krola
+    //w dol
+    for (int i = 1; i < 8; i++)
+    {
+        if (Szachownica[xI][yI + i].rodzaj != "puste" && yI + i < 9)//czy kolejne pole w dol jest puste i czy nie wychodzi poza szachownice
+        {
+            if (Szachownica[xI][yI + i].kolor != Szachownica[xI][yI].kolor)//czy kolor aktualnego krola jest rozny od koloru napotkanej figury
+            {
+                if (Szachownica[xI][yI + i].rodzaj == "wieza")//czy ta figura to wieza
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+    }
+    //w gore
+    for (int i = 1; i < 8; i++)
+    {
+        if (Szachownica[xI][yI - i].rodzaj != "puste" && yI - i > -1)//czy kolejne pole w gore jest puste i czy nie wychodzi poza szachownice
+        {
+            if (Szachownica[xI][yI - i].kolor != Szachownica[xI][yI].kolor)//czy kolor aktualnego krola jest rozny od koloru napotkanej figury
+            {
+                if (Szachownica[xI][yI - i].rodzaj == "wieza")//czy ta figura to wieza
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+    }
+    //w prawo
+    for (int i = 1; i < 8; i++)
+    {
+        if (Szachownica[xI + i][yI].rodzaj != "puste" && xI + i < 9)//czy kolejne pole w prawo jest puste i czy nie wychodzi poza szachownice
+        {
+            if (Szachownica[xI + i][yI].kolor != Szachownica[xI][yI].kolor)//czy kolor aktualnego krola jest rozny od koloru napotkanej figury
+            {
+                if (Szachownica[xI + i][yI].rodzaj == "wieza")//czy ta figura to wieza
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+    }
+    //w lewo
+    for (int i = 1; i < 8; i++)
+    {
+        if (Szachownica[xI - i][yI].rodzaj != "puste" && xI - 1 > -1) //czy kolejne pole w lewo jest puste i czy nie wychodzi poza szachownice
+        {
+            if (Szachownica[xI - i][yI].kolor != Szachownica[xI][yI].kolor) //czy kolor aktualnego krola jest rozny od koloru napotkanej figury
+            {
+                if (Szachownica[xI - i][yI].rodzaj == "wieza")//czy ta figura to wieza
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+    }
+}
+
 void rusz(Figura Fig, int xKoniec, int yKoniec)
 {
     if (Szachownica[xKoniec][yKoniec].rodzaj == "puste")
@@ -79,7 +211,7 @@ void rusz(Figura Fig, int xKoniec, int yKoniec)
     bool bezblednie = false;
     short wybor;
 
-    if (Fig.rodzaj == "pionek" && (Szachownica[xKoniec][yKoniec].y == 1 || Szachownica[xKoniec][yKoniec].y == 8))
+    if (Fig.rodzaj == "pionek" && (Szachownica[xKoniec][yKoniec].y == 1 || Szachownica[xKoniec][yKoniec].y == 8)) //sprawdza czy ruch zostal wykonany pionkiem i czy przemiescil sie on na gorny lub dolny kraniec mapy
     {
         while (bezblednie == false)
         {
@@ -156,6 +288,14 @@ void rusz(Figura Fig, int xKoniec, int yKoniec)
             }
             }
         } 
+    }
+    if (Szachownica[xKoniec][yKoniec].rodzaj == "krol")//sprawdza czy krol zmienil swoje polozenie
+    {
+        nadpiszKrol(xKoniec, yKoniec);
+    }
+    if (szach() == true)
+    {
+        cout << "Zachodzi szach" << endl;
     }
 }
 
@@ -793,6 +933,10 @@ Figura *Figury[32]{WiezaLC, SkoczekLC, GoniecLC, KrolC, DamaC, GoniecPC, Skoczek
 
 int main()
 {
+    //przypisanie kroli do zmiennych globalnych
+    ::krolB = KrolB;
+    ::krolC = KrolC;
+
     for (int i = 0; i < 32; i++)
     {
         Figura *Temp = Figury[i];
