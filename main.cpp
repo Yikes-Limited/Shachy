@@ -47,6 +47,9 @@ Figura Szachownica[8][8];
 Figura* krolB;
 Figura* krolC;
 
+//licznik do mata
+int matLiczer;
+
 // kto ma ruch
 char aktualnyRuch = 'b';
 void autodestrukcja()
@@ -102,7 +105,7 @@ yI: y figury przedstawiony w postaci indexowej
 Szachownica[][]: tabela z figurami(obiekty)
 
 */
-bool szach()
+bool szach(int matX, int matY)
 {
     Figura* tempKrol;
 
@@ -113,6 +116,12 @@ bool szach()
     else
     {
         tempKrol = ::krolB;
+    }
+
+    if (matX != 100 && matY != 100)
+    {
+        tempKrol->x = matX;
+        tempKrol->y = matY;
     }
 
     int xI = tempKrol->x - 1;
@@ -129,10 +138,6 @@ bool szach()
                 if (Szachownica[xI][yI + i].rodzaj == "wieza" || Szachownica[xI][yI + i].rodzaj == "dama")//czy ta figura to wieza lub dama
                 {
                     return true;
-                }
-                else
-                {
-                    return false;
                 }
             }
             else
@@ -157,10 +162,6 @@ bool szach()
                 {
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
             }
             else
             {
@@ -184,10 +185,6 @@ bool szach()
                 {
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
             }
             else
             {
@@ -210,10 +207,6 @@ bool szach()
                 if (Szachownica[xI - i][yI].rodzaj == "wieza" || Szachownica[xI - i][yI].rodzaj == "dama")//czy ta figura to wieza lub dama
                 {
                     return true;
-                }
-                else
-                {
-                    return false;
                 }
             }
             else
@@ -240,10 +233,6 @@ bool szach()
                 {
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
             }
             else
             {
@@ -265,10 +254,6 @@ bool szach()
                 if (Szachownica[xI - i][yI - i].rodzaj == "goniec" || Szachownica[xI - i][yI - i].rodzaj == "dama")//czy ta figura to goniec lub dama
                 {
                     return true;
-                }
-                else
-                {
-                    return false;
                 }
             }
             else
@@ -292,10 +277,6 @@ bool szach()
                 {
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
             }
             else
             {
@@ -317,10 +298,6 @@ bool szach()
                 if (Szachownica[xI - i][yI + i].rodzaj == "goniec" || Szachownica[xI - i][yI + i].rodzaj == "dama")//czy ta figura to goniec lub dama
                 {
                     return true;
-                }
-                else
-                {
-                    return false;
                 }
             }
             else
@@ -430,6 +407,164 @@ bool szach()
             }
         }
     }
+
+    //pionek
+
+    int doPionka;
+
+    if (aktualnyRuch == 'b')
+        doPionka = -1;
+    else
+        doPionka = 1;
+
+    if (yI - doPionka > -1) // sprawdza czy nastepne pole w gore lub w dol( w zaleznosci od koloru jaki sie ruszyl) nie wychodzi poza szachownice
+    {
+        if (xI - 1 > -1)// sprawdza czy nastepne pole w lewo nie wychodzi poza szachownice
+        {
+            if (Szachownica[xI - 1][yI - doPionka].rodzaj != "puste")
+            {
+                if (Szachownica[xI - 1][yI - doPionka].kolor != Szachownica[xI][yI].kolor)
+                {
+                    if (Szachownica[xI - 1][yI - doPionka].rodzaj == "pionek")
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        if (xI + 1 < 8)// sprawdza czy nastepne pole w prawo nie wychodzi poza szachownice
+        {
+            if (Szachownica[xI + 1][yI - doPionka].rodzaj != "puste")
+            {
+                if (Szachownica[xI + 1][yI - doPionka].kolor != Szachownica[xI][yI].kolor)
+                {
+                    if (Szachownica[xI + 1][yI - doPionka].rodzaj == "pionek")
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    delete tempKrol;
+    return false;
+
+}
+
+/*
+Sprawdza czy zachodzi mat
+
+Wykorzystuje:
+
+tempKrol: chwilowe przechowanie koordynatow krola bialego lub czarnego
+czySprawdzone
+
+*/
+
+bool mat()
+{
+    Figura* tempKrol;
+
+    if (aktualnyRuch == 'b')
+    {
+        tempKrol = ::krolC;
+    }
+    else
+    {
+        tempKrol = ::krolB;
+    }
+
+    //przeniesienie sprawdzacza o 1 pole w gore i 1 pole w lewo
+    tempKrol->x -= 1;
+    tempKrol->y -= 1;
+
+    bool czySprawdzone = false;
+
+    int i = 0;
+    int matLiczer = 0;
+
+    while (czySprawdzone == false)
+    {
+        int xDoWyslania = 100;
+        int yDoWyslania = 100;
+
+        switch (i)
+        {
+        case 0: case 1: case 2:
+        {
+            if ((tempKrol->x - 1 > -1 && tempKrol->x + 1 < 8) && tempKrol->y - 1 > 0)
+            {
+                xDoWyslania = tempKrol->x + i;
+                yDoWyslania = tempKrol->y;
+                if (szach(xDoWyslania, yDoWyslania) == true)
+                {
+                    matLiczer++;
+                }
+            }
+            i++;
+            break;
+        }
+        case 3: case 4: case 5:
+        {
+            if (matLiczer < 3)
+            {
+                delete tempKrol;
+                return false;
+            }
+            else
+            {
+                if (tempKrol->x - 1 > -1 && tempKrol->x + 1 < 8)
+                {
+                    xDoWyslania = tempKrol->x + i;
+                    yDoWyslania = tempKrol->y + 1;
+                    if (szach(xDoWyslania, yDoWyslania) == true)
+                    {
+                        matLiczer++;
+                    }
+                }
+                i++;
+                break;
+            }
+        }
+        case 6: case 7: case 8:
+        {
+            if (matLiczer < 6)
+            {
+                delete tempKrol;
+                return false;
+            }
+            else
+            {
+                if ((tempKrol->x - 1 > -1 && tempKrol->x + 1 < 8) && tempKrol->y + 1 < 8)
+                {
+                    xDoWyslania = tempKrol->x + i;
+                    yDoWyslania = tempKrol->y + 2;
+                    if (szach(xDoWyslania, yDoWyslania) == true)
+                    {
+                        matLiczer++;
+                    }
+                }
+                i++;
+                break;
+            }
+        }
+        
+        case 9:
+        {
+            delete tempKrol;
+
+            if (matLiczer == 9)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        }
+    }
 }
 
 void rusz(Figura Fig, int xKoniec, int yKoniec)
@@ -532,9 +667,11 @@ void rusz(Figura Fig, int xKoniec, int yKoniec)
     {
         nadpiszKrol(xKoniec, yKoniec);
     }
-    if (szach() == true)
+    if (szach(100, 100) == true)
     {
         cout << "Zachodzi szach" << endl;
+        mat();
+        cout << " mat" << endl;
     }
 }
 
@@ -1207,6 +1344,4 @@ int main()
 //         BIAŁE
 
 // todo
-//  roszadza
 //  szach mat
-//  szach
