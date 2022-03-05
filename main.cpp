@@ -49,6 +49,9 @@ Figura *krolC;
 // licznik do mata
 int matLiczer;
 
+// czy ktos wygral
+bool wygrana = false;
+
 // kto ma ruch
 char aktualnyRuch = 'b';
 void autodestrukcja()
@@ -325,19 +328,15 @@ bool szach(int matX, int matY)
     if (yI - doPionka > -1) // sprawdza czy nastepne pole w gore lub w dol( w zaleznosci od koloru jaki sie ruszyl) nie wychodzi poza szachownice
     {
         if (xI - 1 > -1) // sprawdza czy nastepne pole w lewo nie wychodzi poza szachownice
-        {
             if (Szachownica[xI - 1][yI - doPionka].rodzaj != "puste")
                 if (Szachownica[xI - 1][yI - doPionka].kolor != Szachownica[xI][yI].kolor)
                     if (Szachownica[xI - 1][yI - doPionka].rodzaj == "pionek")
                         return true;
-        }
         if (xI + 1 < 8) // sprawdza czy nastepne pole w prawo nie wychodzi poza szachownice
-        {
             if (Szachownica[xI + 1][yI - doPionka].rodzaj != "puste")
                 if (Szachownica[xI + 1][yI - doPionka].kolor != Szachownica[xI][yI].kolor)
                     if (Szachownica[xI + 1][yI - doPionka].rodzaj == "pionek")
                         return true;
-        }
     }
 
     return false;
@@ -514,7 +513,14 @@ void rusz(Figura Fig, int xKoniec, int yKoniec)
     {
         cout << "Zachodzi szach";
         if (mat() == true)
+        {
             cout << " i mat";
+            if (aktualnyRuch == 'b')
+                cout << "Wygrywaja biale";
+            else
+                cout << "Wygrywaja czarne";
+            wygrana = true;
+        }
         cout << endl;
     }
 }
@@ -1009,6 +1015,11 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
             return 1;
         }
     }
+    if (szach(100, 100) == true)
+    {
+        cout << "Twoj krol jest w szachu!" << endl;
+        return 1;
+    }
     rusz(FigStart, xKoniec, yKoniec);
     aktualnyRuch == 'b' ? aktualnyRuch = 'c' : aktualnyRuch = 'b';
     return 0;
@@ -1141,12 +1152,14 @@ int main()
     }
     while (true)
     {
+        if (wygrana == true)
+            break;
         rysuj();
         while (true)
         {
 
             int kontrolna = input();
-            if (kontrolna == 0)
+            if (kontrolna == 0 || wygrana == true)
                 break;
         }
     }
