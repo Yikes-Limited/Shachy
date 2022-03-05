@@ -42,12 +42,11 @@ public:
 };
 Figura Szachownica[8][8];
 
+// skazniki na kroli
+Figura *krolB;
+Figura *krolC;
 
-//skazniki na kroli
-Figura* krolB;
-Figura* krolC;
-
-//licznik do mata
+// licznik do mata
 int matLiczer;
 
 // kto ma ruch
@@ -107,16 +106,8 @@ Szachownica[][]: tabela z figurami(obiekty)
 */
 bool szach(int matX, int matY)
 {
-    Figura* tempKrol;
-
-    if (aktualnyRuch == 'b')
-    {
-        tempKrol = ::krolC;
-    }
-    else
-    {
-        tempKrol = ::krolB;
-    }
+    Figura *tempKrol;
+    aktualnyRuch == 'b' ? tempKrol = ::krolC : tempKrol = ::krolB;
 
     if (matX != 100 && matY != 100)
     {
@@ -127,328 +118,229 @@ bool szach(int matX, int matY)
     int xI = tempKrol->x - 1;
     int yI = tempKrol->y - 1;
 
-    //sprawdzanie czy wieza bije krola
-    //w dol
+    // sprawdzanie czy wieza bije krola
+    // w dol
     for (int i = 1; i < 8; i++)
     {
-        if (Szachownica[xI][yI + i].rodzaj != "puste" && yI + i < 8)//czy kolejne pole w dol jest puste i czy nie wychodzi poza szachownice
+        if (Szachownica[xI][yI + i].rodzaj != "puste" && yI + i < 8) // czy kolejne pole w dol jest puste i czy nie wychodzi poza szachownice
         {
-            if (Szachownica[xI][yI + i].kolor != Szachownica[xI][yI].kolor)//czy kolor aktualnego krola jest rozny od koloru nastepnego pola
+            if (Szachownica[xI][yI + i].kolor != Szachownica[xI][yI].kolor) // czy kolor aktualnego krola jest rozny od koloru nastepnego pola
             {
-                if (Szachownica[xI][yI + i].rodzaj == "wieza" || Szachownica[xI][yI + i].rodzaj == "dama")//czy ta figura to wieza lub dama
-                {
+                if (Szachownica[xI][yI + i].rodzaj == "wieza" || Szachownica[xI][yI + i].rodzaj == "dama") // czy ta figura to wieza lub dama
                     return true;
-                }
             }
             else
-            {
                 break;
-            }
         }
         else if (yI + i > 7)
-        {
             break;
-        }
-        
     }
-    //w gore
+    // w gore
     for (int i = 1; i < 8; i++)
     {
-        if (Szachownica[xI][yI - i].rodzaj != "puste" && yI - i > -1)//czy kolejne pole w dol jest puste i czy nie wychodzi poza szachownice
+        if (Szachownica[xI][yI - i].rodzaj != "puste" && yI - i > -1) // czy kolejne pole w dol jest puste i czy nie wychodzi poza szachownice
         {
-            if (Szachownica[xI][yI - i].kolor != Szachownica[xI][yI].kolor)//czy kolor aktualnego krola jest rozny od koloru nastepnego pola
+            if (Szachownica[xI][yI - i].kolor != Szachownica[xI][yI].kolor) // czy kolor aktualnego krola jest rozny od koloru nastepnego pola
             {
-                if (Szachownica[xI][yI - i].rodzaj == "wieza" || Szachownica[xI][yI - i].rodzaj == "dama")//czy ta figura to wieza lub dama
-                {
+                if (Szachownica[xI][yI - i].rodzaj == "wieza" || Szachownica[xI][yI - i].rodzaj == "dama") // czy ta figura to wieza lub dama
                     return true;
-                }
             }
             else
-            {
                 break;
-            }
         }
         else if (yI - i < 0)
-        {
             break;
-        }
-
     }
-    //w prawo
+    // w prawo
     for (int i = 1; i < 8; i++)
     {
-        if (Szachownica[xI + i][yI].rodzaj != "puste" && xI + i < 8)//czy kolejne pole w dol jest puste i czy nie wychodzi poza szachownice
+        if (Szachownica[xI + i][yI].rodzaj != "puste" && xI + i < 8) // czy kolejne pole w dol jest puste i czy nie wychodzi poza szachownice
         {
-            if (Szachownica[xI + i][yI].kolor != Szachownica[xI][yI].kolor)//czy kolor aktualnego krola jest rozny od koloru nastepnego pola
+            if (Szachownica[xI + i][yI].kolor != Szachownica[xI][yI].kolor) // czy kolor aktualnego krola jest rozny od koloru nastepnego pola
             {
-                if (Szachownica[xI + i][yI].rodzaj == "wieza" || Szachownica[xI + i][yI].rodzaj == "dama")//czy ta figura to wieza lub dama
-                {
+                if (Szachownica[xI + i][yI].rodzaj == "wieza" || Szachownica[xI + i][yI].rodzaj == "dama") // czy ta figura to wieza lub dama
                     return true;
-                }
             }
             else
-            {
                 break;
-            }
         }
         else if (xI + i > 7)
-        {
             break;
-        }
-
     }
-    //w lewo
+    // w lewo
     for (int i = 1; i < 8; i++)
     {
-        if (Szachownica[xI - i][yI].rodzaj != "puste" && xI - i > -1)//czy kolejne pole w dol jest puste i czy nie wychodzi poza szachownice
+        if (Szachownica[xI - i][yI].rodzaj != "puste" && xI - i > -1) // czy kolejne pole w dol jest puste i czy nie wychodzi poza szachownice
         {
-            if (Szachownica[xI - i][yI].kolor != Szachownica[xI][yI].kolor)//czy kolor aktualnego krola jest rozny od koloru nastepnego pola
+            if (Szachownica[xI - i][yI].kolor != Szachownica[xI][yI].kolor) // czy kolor aktualnego krola jest rozny od koloru nastepnego pola
             {
-                if (Szachownica[xI - i][yI].rodzaj == "wieza" || Szachownica[xI - i][yI].rodzaj == "dama")//czy ta figura to wieza lub dama
-                {
+                if (Szachownica[xI - i][yI].rodzaj == "wieza" || Szachownica[xI - i][yI].rodzaj == "dama") // czy ta figura to wieza lub dama
                     return true;
-                }
             }
             else
-            {
                 break;
-            }
         }
         else if (xI - i < 0)
-        {
             break;
-        }
-
     }
 
-    //sprawdzanie czy goniec nie bije wiezy
-    //prawy dolny
-    for (int i = 1; i < 8 ; i++)
+    // sprawdzanie czy goniec nie bije wiezy
+    // prawy dolny
+    for (int i = 1; i < 8; i++)
     {
-        if (Szachownica[xI + i][yI + i].rodzaj != "puste" && (xI + i < 8 && yI + i < 8))//czy kolejne pole w prawo w dol po skosie jest puste i czy nie wychodzi poza szachownice
+        if (Szachownica[xI + i][yI + i].rodzaj != "puste" && (xI + i < 8 && yI + i < 8)) // czy kolejne pole w prawo w dol po skosie jest puste i czy nie wychodzi poza szachownice
         {
-            if (Szachownica[xI + i][yI + i].kolor != Szachownica[xI][yI].kolor)//czy kolor aktualnego krola jest rozny od koloru nastepnego pola
+            if (Szachownica[xI + i][yI + i].kolor != Szachownica[xI][yI].kolor) // czy kolor aktualnego krola jest rozny od koloru nastepnego pola
             {
-                if (Szachownica[xI + i][yI + i].rodzaj == "goniec" || Szachownica[xI + i][yI + i].rodzaj == "dama")//czy ta figura to goniec lub dama
-                {
+                if (Szachownica[xI + i][yI + i].rodzaj == "goniec" || Szachownica[xI + i][yI + i].rodzaj == "dama") // czy ta figura to goniec lub dama
                     return true;
-                }
             }
             else
-            {
                 break;
-            }
         }
         else if (xI + i > 7 || yI + i > 7)
-        {
             break;
-        }
     }
-    //lewy gorny
+    // lewy gorny
     for (int i = 1; i < 8; i++)
     {
-        if (Szachownica[xI - i][yI - i].rodzaj != "puste" && (xI - i > - 1 && yI - i > -1))//czy kolejne pole w lewo w gore po skosie jest puste i czy nie wychodzi poza szachownice
+        if (Szachownica[xI - i][yI - i].rodzaj != "puste" && (xI - i > -1 && yI - i > -1)) // czy kolejne pole w lewo w gore po skosie jest puste i czy nie wychodzi poza szachownice
         {
-            if (Szachownica[xI - i][yI - i].kolor != Szachownica[xI][yI].kolor)//czy kolor aktualnego krola jest rozny od koloru nastepnego pola
+            if (Szachownica[xI - i][yI - i].kolor != Szachownica[xI][yI].kolor) // czy kolor aktualnego krola jest rozny od koloru nastepnego pola
             {
-                if (Szachownica[xI - i][yI - i].rodzaj == "goniec" || Szachownica[xI - i][yI - i].rodzaj == "dama")//czy ta figura to goniec lub dama
-                {
+                if (Szachownica[xI - i][yI - i].rodzaj == "goniec" || Szachownica[xI - i][yI - i].rodzaj == "dama") // czy ta figura to goniec lub dama
                     return true;
-                }
             }
             else
-            {
                 break;
-            }
         }
         else if (xI - i < 0 || yI - i < 0)
-        {
             break;
-        }
     }
-    //prawy gorny
+    // prawy gorny
     for (int i = 1; i < 8; i++)
     {
-        if (Szachownica[xI + i][yI - i].rodzaj != "puste" && (xI + i < 8 && yI - i > -1))//czy kolejne pole w prawo w gore po skosie jest puste i czy nie wychodzi poza szachownice
+        if (Szachownica[xI + i][yI - i].rodzaj != "puste" && (xI + i < 8 && yI - i > -1)) // czy kolejne pole w prawo w gore po skosie jest puste i czy nie wychodzi poza szachownice
         {
-            if (Szachownica[xI + i][yI - i].kolor != Szachownica[xI][yI].kolor)//czy kolor aktualnego krola jest rozny od koloru nastepnego pola
+            if (Szachownica[xI + i][yI - i].kolor != Szachownica[xI][yI].kolor) // czy kolor aktualnego krola jest rozny od koloru nastepnego pola
             {
-                if (Szachownica[xI + i][yI - i].rodzaj == "goniec" || Szachownica[xI + i][yI - i].rodzaj == "dama")//czy ta figura to goniec lub dama
-                {
+                if (Szachownica[xI + i][yI - i].rodzaj == "goniec" || Szachownica[xI + i][yI - i].rodzaj == "dama") // czy ta figura to goniec lub dama
                     return true;
-                }
             }
             else
-            {
                 break;
-            }
         }
         else if (xI + i > 7 || yI - i < 0)
-        {
             break;
-        }
     }
-    //lewy dolny
+    // lewy dolny
     for (int i = 1; i < 8; i++)
     {
-        if (Szachownica[xI - i][yI + i].rodzaj != "puste" && (xI - i > -1 && yI + i < 8))//czy kolejne pole w prawo w gore po skosie jest puste i czy nie wychodzi poza szachownice
+        if (Szachownica[xI - i][yI + i].rodzaj != "puste" && (xI - i > -1 && yI + i < 8)) // czy kolejne pole w prawo w gore po skosie jest puste i czy nie wychodzi poza szachownice
         {
-            if (Szachownica[xI - i][yI + i].kolor != Szachownica[xI][yI].kolor)//czy kolor aktualnego krola jest rozny od koloru nastepnego pola
+            if (Szachownica[xI - i][yI + i].kolor != Szachownica[xI][yI].kolor) // czy kolor aktualnego krola jest rozny od koloru nastepnego pola
             {
-                if (Szachownica[xI - i][yI + i].rodzaj == "goniec" || Szachownica[xI - i][yI + i].rodzaj == "dama")//czy ta figura to goniec lub dama
-                {
+                if (Szachownica[xI - i][yI + i].rodzaj == "goniec" || Szachownica[xI - i][yI + i].rodzaj == "dama") // czy ta figura to goniec lub dama
                     return true;
-                }
             }
             else
-            {
                 break;
-            }
         }
         else if (xI - i < 0 || yI + i > 7)
         {
             break;
         }
     }
-    //skoczek
-    //w gore
+    // skoczek
+    // w gore
     if (yI - 2 > -1 && (xI + 1 < 8 && xI - 1 > -1)) // czy pole nie wychodzi poza szachownice
     {
         if (Szachownica[xI + 1][yI - 2].rodzaj != "puste") // czy na polu cos sie znajduje
         {
             if (Szachownica[xI + 1][yI - 2].kolor != Szachownica[xI][yI].kolor) // czy figura na tym polu ma inny kolor niz krol
-            {
-                if (Szachownica[xI + 1][yI - 2].rodzaj == "skoczek")// czy ta figura to skoczek
-                {
+                if (Szachownica[xI + 1][yI - 2].rodzaj == "skoczek")            // czy ta figura to skoczek
                     return true;
-                }
-            }
         }
         else if (Szachownica[xI - 1][yI - 2].rodzaj != "puste") // czy na polu cos sie znajduje
         {
             if (Szachownica[xI - 1][yI - 2].kolor != Szachownica[xI][yI].kolor) // czy figura na tym polu ma inny kolor niz krol
-            {
-                if (Szachownica[xI - 1][yI - 2].rodzaj == "skoczek")// czy ta figura to skoczek
-                {
+                if (Szachownica[xI - 1][yI - 2].rodzaj == "skoczek")            // czy ta figura to skoczek
                     return true;
-                }
-            }
         }
     }
-    //w dol
-    if (yI + 2 < 8 && (xI + 1 < 8 && xI - 1 > -1))// czy pole nie wychodzi poza szachownice
+    // w dol
+    if (yI + 2 < 8 && (xI + 1 < 8 && xI - 1 > -1)) // czy pole nie wychodzi poza szachownice
     {
         if (Szachownica[xI + 1][yI + 2].rodzaj != "puste") // czy na polu cos sie znajduje
         {
             if (Szachownica[xI + 1][yI + 2].kolor != Szachownica[xI][yI].kolor) // czy figura na tym polu ma inny kolor niz krol
-            {
-                if (Szachownica[xI + 1][yI + 2].rodzaj == "skoczek")// czy ta figura to skoczek
-                {
+                if (Szachownica[xI + 1][yI + 2].rodzaj == "skoczek")            // czy ta figura to skoczek
                     return true;
-                }
-            }
         }
         else if (Szachownica[xI - 1][yI + 2].rodzaj != "puste") // czy na polu cos sie znajduje
         {
             if (Szachownica[xI - 1][yI + 2].kolor != Szachownica[xI][yI].kolor) // czy figura na tym polu ma inny kolor niz krol
-            {
-                if (Szachownica[xI - 1][yI + 2].rodzaj == "skoczek")// czy ta figura to skoczek
-                {
+                if (Szachownica[xI - 1][yI + 2].rodzaj == "skoczek")            // czy ta figura to skoczek
                     return true;
-                }
-            }
         }
     }
-    //w lewo
-    if (xI - 2 > -1 && (yI - 1 > -1 && yI + 1 < 8 ))// czy pole nie wychodzi poza szachownice
+    // w lewo
+    if (xI - 2 > -1 && (yI - 1 > -1 && yI + 1 < 8)) // czy pole nie wychodzi poza szachownice
     {
         if (Szachownica[xI - 2][yI - 1].rodzaj != "puste") // czy na polu cos sie znajduje
         {
             if (Szachownica[xI - 2][yI - 1].kolor != Szachownica[xI][yI].kolor) // czy figura na tym polu ma inny kolor niz krol
-            {
-                if (Szachownica[xI - 2][yI - 1].rodzaj == "skoczek")// czy ta figura to skoczek
-                {
+                if (Szachownica[xI - 2][yI - 1].rodzaj == "skoczek")            // czy ta figura to skoczek
                     return true;
-                }
-            }
         }
         else if (Szachownica[xI - 2][yI + 1].rodzaj != "puste") // czy na polu cos sie znajduje
         {
             if (Szachownica[xI - 2][yI + 1].kolor != Szachownica[xI][yI].kolor) // czy figura na tym polu ma inny kolor niz krol
-            {
-                if (Szachownica[xI - 2][yI + 1].rodzaj == "skoczek")// czy ta figura to skoczek
-                {
+                if (Szachownica[xI - 2][yI + 1].rodzaj == "skoczek")            // czy ta figura to skoczek
                     return true;
-                }
-            }
         }
     }
-    //w prawo
-    if (xI + 2 < 8 && (yI - 1 > -1 && yI + 1 < 8))// czy pole nie wychodzi poza szachownice
+    // w prawo
+    if (xI + 2 < 8 && (yI - 1 > -1 && yI + 1 < 8)) // czy pole nie wychodzi poza szachownice
     {
         if (Szachownica[xI + 2][yI - 1].rodzaj != "puste") // czy na polu cos sie znajduje
         {
             if (Szachownica[xI + 2][yI - 1].kolor != Szachownica[xI][yI].kolor) // czy figura na tym polu ma inny kolor niz krol
-            {
-                if (Szachownica[xI + 2][yI - 1].rodzaj == "skoczek")// czy ta figura to skoczek
-                {
+                if (Szachownica[xI + 2][yI - 1].rodzaj == "skoczek")            // czy ta figura to skoczek
                     return true;
-                }
-            }
         }
         else if (Szachownica[xI - 2][yI + 1].rodzaj != "puste") // czy na polu cos sie znajduje
         {
             if (Szachownica[xI - 2][yI + 1].kolor != Szachownica[xI][yI].kolor) // czy figura na tym polu ma inny kolor niz krol
-            {
-                if (Szachownica[xI - 2][yI + 1].rodzaj == "skoczek")// czy ta figura to skoczek
-                {
+                if (Szachownica[xI - 2][yI + 1].rodzaj == "skoczek")            // czy ta figura to skoczek
                     return true;
-                }
-            }
         }
     }
 
-    //pionek
+    // pionek
 
     int doPionka;
-
-    if (aktualnyRuch == 'b')
-        doPionka = -1;
-    else
-        doPionka = 1;
+    aktualnyRuch == 'b' ? doPionka = -1 : doPionka = 1;
 
     if (yI - doPionka > -1) // sprawdza czy nastepne pole w gore lub w dol( w zaleznosci od koloru jaki sie ruszyl) nie wychodzi poza szachownice
     {
-        if (xI - 1 > -1)// sprawdza czy nastepne pole w lewo nie wychodzi poza szachownice
+        if (xI - 1 > -1) // sprawdza czy nastepne pole w lewo nie wychodzi poza szachownice
         {
             if (Szachownica[xI - 1][yI - doPionka].rodzaj != "puste")
-            {
                 if (Szachownica[xI - 1][yI - doPionka].kolor != Szachownica[xI][yI].kolor)
-                {
                     if (Szachownica[xI - 1][yI - doPionka].rodzaj == "pionek")
-                    {
                         return true;
-                    }
-                }
-            }
         }
-        if (xI + 1 < 8)// sprawdza czy nastepne pole w prawo nie wychodzi poza szachownice
+        if (xI + 1 < 8) // sprawdza czy nastepne pole w prawo nie wychodzi poza szachownice
         {
             if (Szachownica[xI + 1][yI - doPionka].rodzaj != "puste")
-            {
                 if (Szachownica[xI + 1][yI - doPionka].kolor != Szachownica[xI][yI].kolor)
-                {
                     if (Szachownica[xI + 1][yI - doPionka].rodzaj == "pionek")
-                    {
                         return true;
-                    }
-                }
-            }
         }
     }
 
     return false;
-
 }
 
 /*
@@ -463,18 +355,10 @@ czySprawdzone
 
 bool mat()
 {
-    Figura* tempKrol;
+    Figura *tempKrol;
+    aktualnyRuch == 'b' ? tempKrol = ::krolC : tempKrol = ::krolB;
 
-    if (aktualnyRuch == 'b')
-    {
-        tempKrol = ::krolC;
-    }
-    else
-    {
-        tempKrol = ::krolB;
-    }
-
-    //przeniesienie sprawdzacza o 1 pole w gore i 1 pole w lewo
+    // przeniesienie sprawdzacza o 1 pole w gore i 1 pole w lewo
     tempKrol->x -= 1;
     tempKrol->y -= 1;
 
@@ -490,26 +374,26 @@ bool mat()
 
         switch (i)
         {
-        case 0: case 1: case 2:
+        case 0:
+        case 1:
+        case 2:
         {
             if ((tempKrol->x - 1 > -1 && tempKrol->x + 1 < 8) && tempKrol->y - 1 > 0)
             {
                 xDoWyslania = tempKrol->x + i;
                 yDoWyslania = tempKrol->y;
                 if (szach(xDoWyslania, yDoWyslania) == true)
-                {
                     matLiczer++;
-                }
             }
             i++;
             break;
         }
-        case 3: case 4: case 5:
+        case 3:
+        case 4:
+        case 5:
         {
             if (matLiczer < 3)
-            {
                 return false;
-            }
             else
             {
                 if (tempKrol->x - 1 > -1 && tempKrol->x + 1 < 8)
@@ -525,12 +409,12 @@ bool mat()
                 break;
             }
         }
-        case 6: case 7: case 8:
+        case 6:
+        case 7:
+        case 8:
         {
             if (matLiczer < 6)
-            {
                 return false;
-            }
             else
             {
                 if ((tempKrol->x - 1 > -1 && tempKrol->x + 1 < 8) && tempKrol->y + 1 < 8)
@@ -546,17 +430,13 @@ bool mat()
                 break;
             }
         }
-        
+
         case 9:
         {
             if (matLiczer == 9)
-            {
                 return true;
-            }
             else
-            {
                 return false;
-            }
         }
         }
     }
@@ -565,9 +445,7 @@ bool mat()
 void rusz(Figura Fig, int xKoniec, int yKoniec)
 {
     if (Szachownica[xKoniec][yKoniec].rodzaj == "puste")
-    {
         swap(Szachownica[Fig.x - 1][Fig.y - 1], Szachownica[xKoniec][yKoniec]);
-    }
     else
     {
         Figura *Puste = new Figura();
@@ -580,7 +458,7 @@ void rusz(Figura Fig, int xKoniec, int yKoniec)
     bool bezblednie = false;
     short wybor;
 
-    if (Fig.rodzaj == "pionek" && (Szachownica[xKoniec][yKoniec].y == 1 || Szachownica[xKoniec][yKoniec].y == 8)) //sprawdza czy ruch zostal wykonany pionkiem i czy przemiescil sie on na gorny lub dolny kraniec mapy
+    if (Fig.rodzaj == "pionek" && (Szachownica[xKoniec][yKoniec].y == 1 || Szachownica[xKoniec][yKoniec].y == 8)) // sprawdza czy ruch zostal wykonany pionkiem i czy przemiescil sie on na gorny lub dolny kraniec mapy
     {
         while (bezblednie == false)
         {
@@ -592,61 +470,33 @@ void rusz(Figura Fig, int xKoniec, int yKoniec)
 
             cin >> wybor;
 
-            switch(wybor)
+            switch (wybor)
             {
             case 1:
             {
                 Szachownica[xKoniec][yKoniec].rodzaj = "dama";
-                if (Fig.kolor == 'b')
-                {
-                    Szachownica[xKoniec][yKoniec].symbol = 'D';
-                }
-                else
-                {
-                    Szachownica[xKoniec][yKoniec].symbol = 'd';
-                }
+                Fig.kolor == 'b' ? Szachownica[xKoniec][yKoniec].symbol = 'D' : Szachownica[xKoniec][yKoniec].symbol = 'd';
                 bezblednie = true;
                 break;
             }
             case 2:
             {
                 Szachownica[xKoniec][yKoniec].rodzaj = "wieza";
-                if (Fig.kolor == 'b')
-                {
-                    Szachownica[xKoniec][yKoniec].symbol = 'W';
-                }
-                else
-                {
-                    Szachownica[xKoniec][yKoniec].symbol = 'w';
-                }
+                Fig.kolor == 'b' ? Szachownica[xKoniec][yKoniec].symbol = 'W' : Szachownica[xKoniec][yKoniec].symbol = 'w';
                 bezblednie = true;
                 break;
             }
             case 3:
             {
                 Szachownica[xKoniec][yKoniec].rodzaj = "goniec";
-                if (Fig.kolor == 'b')
-                {
-                    Szachownica[xKoniec][yKoniec].symbol = 'G';
-                }
-                else
-                {
-                    Szachownica[xKoniec][yKoniec].symbol = 'g';
-                }
+                Fig.kolor == 'b' ? Szachownica[xKoniec][yKoniec].symbol = 'G' : Szachownica[xKoniec][yKoniec].symbol = 'g';
                 bezblednie = true;
                 break;
             }
             case 4:
             {
                 Szachownica[xKoniec][yKoniec].rodzaj = "skoczek";
-                if (Fig.kolor == 'b')
-                {
-                    Szachownica[xKoniec][yKoniec].symbol = 'S';
-                }
-                else
-                {
-                    Szachownica[xKoniec][yKoniec].symbol = 's';
-                }
+                Fig.kolor == 'b' ? Szachownica[xKoniec][yKoniec].symbol = 'S' : Szachownica[xKoniec][yKoniec].symbol = 's';
                 bezblednie = true;
                 break;
             }
@@ -656,12 +506,10 @@ void rusz(Figura Fig, int xKoniec, int yKoniec)
                 break;
             }
             }
-        } 
+        }
     }
-    if (Szachownica[xKoniec][yKoniec].rodzaj == "krol")//sprawdza czy krol zmienil swoje polozenie
-    {
+    if (Szachownica[xKoniec][yKoniec].rodzaj == "krol") // sprawdza czy krol zmienil swoje polozenie
         nadpiszKrol(xKoniec, yKoniec);
-    }
     if (szach(100, 100) == true)
     {
         cout << "Zachodzi szach" << endl;
@@ -693,15 +541,7 @@ void ruszFrancuz(Figura Fig, int xKoniec, int yKoniec)
     swap(Szachownica[Fig.x - 1][Fig.y - 1], Szachownica[xKoniec][yKoniec]);
 
     Szachownica[xKoniec][yKoniec].y = yKoniec + 1;
-    if ((Fig.x - 1) - xKoniec == 1)
-    {
-        Szachownica[xKoniec][yKoniec].x = xKoniec - 1;
-    }
-    else
-    {
-        Szachownica[xKoniec][yKoniec].x = xKoniec + 1;
-    }
-
+    (Fig.x - 1) - xKoniec == 1 ? Szachownica[xKoniec][yKoniec].x = xKoniec - 1 : Szachownica[xKoniec][yKoniec].x = xKoniec + 1;
 }
 
 /*
@@ -871,24 +711,20 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
                 if (FigStart.y - yK > 0)
                 {
                     for (int i = yStart - 1; i > yKoniec; i--)
-                    {
                         if (Szachownica[xStart][i].rodzaj != "puste")
                         {
                             nieMozliwy = true;
                             break;
                         }
-                    }
                 }
                 else
                 {
                     for (int i = yStart + 1; i < yKoniec; i++)
-                    {
                         if (Szachownica[xStart][i].rodzaj != "puste")
                         {
                             nieMozliwy = true;
                             break;
                         }
-                    }
                 }
             }
             else
@@ -898,24 +734,20 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
                     if (FigStart.x - xK > 0)
                     {
                         for (int i = xStart - 1; i > xKoniec; i--)
-                        {
                             if (Szachownica[i][yStart].rodzaj != "puste")
                             {
                                 nieMozliwy = true;
                                 break;
                             }
-                        }
                     }
                     else
                     {
                         for (int i = xStart + 1; i < xKoniec; i++)
-                        {
                             if (Szachownica[i][yStart].rodzaj != "puste")
                             {
                                 nieMozliwy = true;
                                 break;
                             }
-                        }
                     }
                 }
             }
@@ -1074,24 +906,20 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
                 if (FigStart.y - yK > 0)
                 {
                     for (int i = yStart - 1; i > yKoniec; i--)
-                    {
                         if (Szachownica[xStart][i].rodzaj != "puste")
                         {
                             nieMozliwy = true;
                             break;
                         }
-                    }
                 }
                 else
                 {
                     for (int i = yStart + 1; i < yKoniec; i++)
-                    {
                         if (Szachownica[xStart][i].rodzaj != "puste")
                         {
                             nieMozliwy = true;
                             break;
                         }
-                    }
                 }
             }
             else
@@ -1101,24 +929,20 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
                     if (FigStart.x - xK > 0)
                     {
                         for (int i = xStart - 1; i > xKoniec; i--)
-                        {
                             if (Szachownica[i][yStart].rodzaj != "puste")
                             {
                                 nieMozliwy = true;
                                 break;
                             }
-                        }
                     }
                     else
                     {
                         for (int i = xStart + 1; i < xKoniec; i++)
-                        {
                             if (Szachownica[i][yStart].rodzaj != "puste")
                             {
                                 nieMozliwy = true;
                                 break;
                             }
-                        }
                     }
                 }
             }
@@ -1144,15 +968,15 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
     {
         if (abs(FigStart.x - xK) > 1 || abs(FigStart.y - yK) > 1)
         {
-            //roszada
-            if (abs(xStart - xKoniec) == 2 && (yK == 8 || yK == 1))// sprawdza czy krol rusza sie w prawo lub lewo o 2 pola co ma prowadzic do roszady oraz czy figury znajduja sie na samym dole szachownicy
+            // roszada
+            if (abs(xStart - xKoniec) == 2 && (yK == 8 || yK == 1)) // sprawdza czy krol rusza sie w prawo lub lewo o 2 pola co ma prowadzic do roszady oraz czy figury znajduja sie na samym dole szachownicy
             {
                 bool idzieWPrawo = false; // zmienna do okreslenia kierunku ruchu gracza
 
                 if (xKoniec > xStart) // idzie w prawo
                 {
                     idzieWPrawo = true;
-                    if (Szachownica[xStart + 1][yStart].rodzaj == "puste" && Szachownica[xStart + 2][yStart].rodzaj == "puste" && Szachownica[xStart + 3][yStart].rodzaj == "wieza")// sprawdza czy pola miedzy krolem a prawa wieza sa puste i czy wieza stoi w narozniku
+                    if (Szachownica[xStart + 1][yStart].rodzaj == "puste" && Szachownica[xStart + 2][yStart].rodzaj == "puste" && Szachownica[xStart + 3][yStart].rodzaj == "wieza") // sprawdza czy pola miedzy krolem a prawa wieza sa puste i czy wieza stoi w narozniku
                     {
                         ruchRoszada(FigStart, xKoniec, yKoniec, idzieWPrawo);
                         aktualnyRuch == 'b' ? aktualnyRuch = 'c' : aktualnyRuch = 'b';
@@ -1164,9 +988,9 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
                         return 1;
                     }
                 }
-                else if (xKoniec < xStart)// idzie w lewo
+                else if (xKoniec < xStart) // idzie w lewo
                 {
-                    if (Szachownica[xStart - 1][yStart].rodzaj == "puste" && Szachownica[xStart - 2][yStart].rodzaj == "puste" && Szachownica[xStart - 3][yStart].rodzaj == "puste" && Szachownica[xStart - 4][yStart].rodzaj == "wieza")// sprawdza czy pola miedzy krolem a prawa wieza sa puste i czy wieza stoi w narozniku
+                    if (Szachownica[xStart - 1][yStart].rodzaj == "puste" && Szachownica[xStart - 2][yStart].rodzaj == "puste" && Szachownica[xStart - 3][yStart].rodzaj == "puste" && Szachownica[xStart - 4][yStart].rodzaj == "wieza") // sprawdza czy pola miedzy krolem a prawa wieza sa puste i czy wieza stoi w narozniku
                     {
                         ruchRoszada(FigStart, xKoniec, yKoniec, idzieWPrawo);
                         aktualnyRuch == 'b' ? aktualnyRuch = 'c' : aktualnyRuch = 'b';
@@ -1237,7 +1061,8 @@ int input()
 void rysuj()
 {
     cout << endl;
-    cout << "       CZARNE" << endl<<endl;
+    cout << "       CZARNE" << endl
+         << endl;
     for (int i = 0; i < 8; i++)
     {
         cout << i + 1 << " ";
@@ -1248,7 +1073,8 @@ void rysuj()
         cout << "|" << endl;
     }
     cout << endl
-         << "   A B C D E F G H " << endl<<endl;
+         << "   A B C D E F G H " << endl
+         << endl;
     cout << "        BIALE" << endl;
 
     if (aktualnyRuch == 'b')
@@ -1303,7 +1129,7 @@ Figura *Figury[32]{WiezaLC, SkoczekLC, GoniecLC, KrolC, DamaC, GoniecPC, Skoczek
 
 int main()
 {
-    //przypisanie kroli do zmiennych globalnych
+    // przypisanie kroli do zmiennych globalnych
     ::krolB = KrolB;
     ::krolC = KrolC;
 
