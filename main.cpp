@@ -447,7 +447,6 @@ bool szach(int matX, int matY)
         }
     }
 
-    delete tempKrol;
     return false;
 
 }
@@ -509,7 +508,6 @@ bool mat()
         {
             if (matLiczer < 3)
             {
-                delete tempKrol;
                 return false;
             }
             else
@@ -531,7 +529,6 @@ bool mat()
         {
             if (matLiczer < 6)
             {
-                delete tempKrol;
                 return false;
             }
             else
@@ -552,8 +549,6 @@ bool mat()
         
         case 9:
         {
-            delete tempKrol;
-
             if (matLiczer == 9)
             {
                 return true;
