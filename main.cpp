@@ -512,9 +512,10 @@ void rusz(Figura Fig, int xKoniec, int yKoniec)
         nadpiszKrol(xKoniec, yKoniec);
     if (szach(100, 100) == true)
     {
-        cout << "Zachodzi szach" << endl;
-        mat();
-        cout << " mat" << endl;
+        cout << "Zachodzi szach";
+        if (mat() == true)
+            cout << " i mat";
+        cout << endl;
     }
 }
 
