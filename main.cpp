@@ -368,13 +368,10 @@ bool mat()
     tempKrol->x -= 1;
     tempKrol->y -= 1;
 
-    bool czySprawdzone = false;
-
     int i = 0;
     int matLiczer = 0;
+    int zajete = 0;
 
-    while (czySprawdzone == false)
-    {
         int xDoWyslania = 100;
         int yDoWyslania = 100;
 
@@ -386,10 +383,14 @@ bool mat()
         {
             if ((tempKrol->x - 1 > -1 && tempKrol->x + 1 < 8) && tempKrol->y - 1 > 0)
             {
-                xDoWyslania = tempKrol->x + i;
-                yDoWyslania = tempKrol->y;
-                if (szach(xDoWyslania, yDoWyslania, 0) == true)
-                    matLiczer++;
+                if (tempKrol->rodzaj == "puste")
+                {
+                    xDoWyslania = tempKrol->x + i;
+                    yDoWyslania = tempKrol->y;
+                    if (szach(xDoWyslania, yDoWyslania, 0) == true)
+                        matLiczer++;
+                }
+                zajete++;
             }
             i++;
             break;
@@ -404,11 +405,14 @@ bool mat()
             {
                 if (tempKrol->x - 1 > -1 && tempKrol->x + 1 < 8)
                 {
-                    xDoWyslania = tempKrol->x + i;
-                    yDoWyslania = tempKrol->y + 1;
-                    if (szach(xDoWyslania, yDoWyslania, 0) == true)
+                    if (tempKrol->rodzaj == "puste")
                     {
-                        matLiczer++;
+                        xDoWyslania = tempKrol->x + i;
+                        yDoWyslania = tempKrol->y + 1;
+                        if (szach(xDoWyslania, yDoWyslania, 0) == true)
+                        {
+                            matLiczer++;
+                        }
                     }
                 }
                 i++;
@@ -425,11 +429,14 @@ bool mat()
             {
                 if ((tempKrol->x - 1 > -1 && tempKrol->x + 1 < 8) && tempKrol->y + 1 < 8)
                 {
-                    xDoWyslania = tempKrol->x + i;
-                    yDoWyslania = tempKrol->y + 2;
-                    if (szach(xDoWyslania, yDoWyslania, 0) == true)
+                    if (tempKrol->rodzaj == "puste")
                     {
-                        matLiczer++;
+                        xDoWyslania = tempKrol->x + i;
+                        yDoWyslania = tempKrol->y + 2;
+                        if (szach(xDoWyslania, yDoWyslania, 0) == true)
+                        {
+                            matLiczer++;
+                        }
                     }
                 }
                 i++;
@@ -439,13 +446,13 @@ bool mat()
 
         case 9:
         {
-            if (matLiczer == 9)
+            if (matLiczer - zajete == 9 - zajete)
                 return true;
             else
                 return false;
         }
         }
-    }
+
 }
 
 void rusz(Figura Fig, int xKoniec, int yKoniec)
