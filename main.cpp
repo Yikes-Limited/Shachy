@@ -102,15 +102,22 @@ Sprawdza czy zachodzi szach
 Wykorzystuje:
 
 tempKrol: chwilowe przechowanie koordynatow krola bialego lub czarnego
-xI: x figury przedstawiony w postaci indexowej
-yI: y figury przedstawiony w postaci indexowej
+matX: liczba kontrolna do sprawdzania mata
+matY: liczba kontrolna do sprawdzania mata
 Szachownica[][]: tabela z figurami(obiekty)
 
 */
-bool szach(int matX, int matY)
+bool szach(int matX, int matY, int kontrolnaPrzedRuchem)
 {
     Figura *tempKrol;
-    aktualnyRuch == 'b' ? tempKrol = ::krolC : tempKrol = ::krolB;
+    if (kontrolnaPrzedRuchem == 1)
+    {
+        aktualnyRuch == 'b' ? tempKrol = ::krolB : tempKrol = ::krolC;
+    }
+    else
+    {
+        aktualnyRuch == 'b' ? tempKrol = ::krolC : tempKrol = ::krolB;
+    }
 
     if (matX != 100 && matY != 100)
     {
@@ -381,7 +388,7 @@ bool mat()
             {
                 xDoWyslania = tempKrol->x + i;
                 yDoWyslania = tempKrol->y;
-                if (szach(xDoWyslania, yDoWyslania) == true)
+                if (szach(xDoWyslania, yDoWyslania, 0) == true)
                     matLiczer++;
             }
             i++;
@@ -399,7 +406,7 @@ bool mat()
                 {
                     xDoWyslania = tempKrol->x + i;
                     yDoWyslania = tempKrol->y + 1;
-                    if (szach(xDoWyslania, yDoWyslania) == true)
+                    if (szach(xDoWyslania, yDoWyslania, 0) == true)
                     {
                         matLiczer++;
                     }
@@ -420,7 +427,7 @@ bool mat()
                 {
                     xDoWyslania = tempKrol->x + i;
                     yDoWyslania = tempKrol->y + 2;
-                    if (szach(xDoWyslania, yDoWyslania) == true)
+                    if (szach(xDoWyslania, yDoWyslania, 0) == true)
                     {
                         matLiczer++;
                     }
@@ -509,7 +516,7 @@ void rusz(Figura Fig, int xKoniec, int yKoniec)
     }
     if (Szachownica[xKoniec][yKoniec].rodzaj == "krol") // sprawdza czy krol zmienil swoje polozenie
         nadpiszKrol(xKoniec, yKoniec);
-    if (szach(100, 100) == true)
+    if (szach(100, 100, 0) == true)
     {
         cout << "Zachodzi szach";
         if (mat() == true)
@@ -1015,12 +1022,13 @@ int walidacja(int xStart, int yStart, int xKoniec, int yKoniec)
             return 1;
         }
     }
-    if (szach(100, 100) == true)
+    
+    rusz(FigStart, xKoniec, yKoniec);
+    if (szach(100, 100, 1) == true)
     {
-        cout << "Twoj krol jest w szachu!" << endl;
+        cout << "Krol jest w szachu!" << endl;
         return 1;
     }
-    rusz(FigStart, xKoniec, yKoniec);
     aktualnyRuch == 'b' ? aktualnyRuch = 'c' : aktualnyRuch = 'b';
     return 0;
 }
